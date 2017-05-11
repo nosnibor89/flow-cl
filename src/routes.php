@@ -1,10 +1,12 @@
 <?php
 // Routes
 
-$app->get('/[{name}]', function ($request, $response, $args) {
-    // Sample log message
-    $this->logger->info("Slim-Skeleton '/' route");
 
-    // Render index view
-    return $this->renderer->render($response, 'index.phtml', $args);
+// App Home
+$app->get('/', function ($request, $response, $args) {
+
+    $data = array('API' => 'Payment-Gateway-Flow');
+
+    return $response->withJson($data);
+
 });
