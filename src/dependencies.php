@@ -17,3 +17,29 @@ $container['logger'] = function ($c) {
     $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
     return $logger;
 };
+
+// Vendor
+
+// Can't so far because constructor need the env filename which we are going to load dinamically
+// $container['dotenv'] = function ($c) {
+//      return new \Dotenv\Dotenv(__DIR__.'../config');
+// };
+
+//Services
+$container['ConfigService'] = function($c) {
+    return new \App\Services\ConfigService($c);
+};
+
+$container['PaymentService'] = function($c) {
+    return new \App\Services\PaymentService($c);
+};
+
+//Controllers
+$container['HomeController'] = function($c) {
+    return new \App\Controllers\HomeController($c);
+};
+
+
+$container['PaymentController'] = function($c) {
+    return new \App\Controllers\PaymentController($c);
+};

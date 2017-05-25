@@ -10,3 +10,8 @@ $app->get('/', function ($request, $response, $args) {
     return $response->withJson($data);
 
 });
+
+
+$app->get('/home', '\App\Controllers\HomeController:home');
+
+$app->get('/pay', '\App\Controllers\PaymentController:pay');
