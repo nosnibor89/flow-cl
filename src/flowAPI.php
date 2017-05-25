@@ -2,35 +2,144 @@
 /*******************************************************************************
 * flowAPI                                                                      	*
 *                                                                              	*
-* Version: 1.4                                                            	*
+* Version: 1.4                                                            	    *
 * Date:    2015-05-25                                                          	*
-* Author:  flow.cl                                                     			*
+* Author:  flow.cl                                                              *                                                    
+*###############################################################################
+* Modified:                                                                     *
+* Date:    2017-05-25                                                   	    *
+* Author:  Robinson Marquez                                                     *
+* Reason: Constructor does not acople to how we are going to implement this     *
+* library                                                                       *
+*                                                                               *
 ********************************************************************************/
 
-require_once "config.php";
+// require_once "config.php";
 
 class flowAPI {
 	
 	protected $order = array();
-	
+
 	//Método constructor de compatibilidad
-	function flowAPI() {;
-		$this->__construct();
-	}
+	// function flowAPI() {;
+	// 	$this->__construct();
+	// }
 	
 	//Constructor de la clase
-	function __construct() {
-		global $flow_medioPago;
-		$this->order["OrdenNumero"] = "";
-		$this->order["Concepto"] = "";
-		$this->order["Monto"] = "";
-		$this->order["MedioPago"] = $flow_medioPago;
-		$this->order["FlowNumero"] = "";
-		$this->order["Pagador"] = "";
-		$this->order["Status"] = "";
-		$this->order["Error"] = "";
+	// function __construct() {
+	// 	global $flow_medioPago;
+	// 	$this->order["OrdenNumero"] = "";
+	// 	$this->order["Concepto"] = "";
+	// 	$this->order["Monto"] = "";
+	// 	$this->order["MedioPago"] = $flow_medioPago;
+	// 	$this->order["FlowNumero"] = "";
+	// 	$this->order["Pagador"] = "";
+	// 	$this->order["Status"] = "";
+	// 	$this->order["Error"] = "";
+	// }
+
+
+	/**
+	*	Robinson Marquez
+	*   Setting properties
+	*/
+	protected $flow_url_exito;
+	protected $flow_url_fracaso;
+	protected $flow_url_confirmacion;
+	protected $flow_url_retorno;
+	protected $flow_url_pago;
+	protected $flow_keys;
+	protected $flow_logPath;
+	protected $flow_comercio;
+	protected $flow_medioPago;
+	protected $flow_tipo_integracion;
+
+	/**
+	* 	Robinson Marquez
+	*	Constructor that remove dependency for `config.php`
+	*	@param 	configData 	Array 	Initial Setup info(url, flow medium, payment method, etc)
+	*/ 
+	function __construct($configData){
+
+		//Setting urls
+
+		/**
+		* URL de su página de éxito
+		* @var string
+		*/
+		$this->flow_url_exito = $configData['flow_url_exito'];
+
+		/**
+		* URL de su página de fracaso
+		* @var string
+		*/
+		$this->flow_url_fracaso = $configData['flow_url_fracaso'];
+
+		/**
+		* URL de su página de confirmación
+		* @var string
+		*/
+		$this->flow_url_confirmacion = $configData['flow_url_confirmacion'];
+
+		/**
+		* URL de su página de retorno
+		* @var string
+		*/
+		$this->flow_url_retorno = $configData['flow_url_retorno'];
+
+		/**
+		* Ingrese aquí la página de pago de Flow
+		* Sitio de pruebas = http://flow.tuxpan.com/app/kpf/pago.php
+		* Sitio de produccion = https://www.flow.cl/app/kpf/pago.php
+		* @var string
+		*/
+		$this->flow_url_pago = $configData['flow_url_pago'];
+
+		# Commerce specific config
+
+		/**
+		* Ruta (path) en su sitio donde están las llaves
+		* @var string
+		*/
+		$this->flow_keys= $configData['flow_keys'];
+
+		/**
+		* Ruta (path) en su sitio donde estarán los archivos de logs
+		* @var string
+		*/
+		$this->flow_logPath= $configData['flow_logPath'];
+
+		/**
+		* Email con el que está registrado en Flow
+		* @var string
+		*/
+		$this->flow_comercio= $configData['flow_comercio'];
+
+		/**
+		* Medio de pago
+		* Valores posibles:
+		* Solo Webpay = 1
+		* Solo Servipag = 2
+		* Solo Multicaja = 3
+		* Todos los medios de pago = 9
+		* @var string
+		*/
+		$this->flow_medioPago= $configData['flow_medioPago'];
+
+		/**
+		* Modo de acceso
+		* Valores posibles:
+		* Mostrar pasarela Flow = f 
+		* Ingresar directamente al medio de pago = d
+		* 
+		* @var string
+		*/
+		$this->flow_tipo_integracion= $configData['flow_tipo_integracion'];
+
 	}
-	
+
+
+
 	// Metodos SET
 	
 	/**
@@ -187,13 +296,13 @@ class flowAPI {
 	* @return string flow_pack Paquete de datos firmados listos para ser enviados a Flow
 	*/
 	public function new_order($orden_compra, $monto,  $concepto, $email_pagador, $medioPago = "Non") {
-		global $flow_medioPago;
+		// global $flow_medioPago;
 		$this->flow_log("Iniciando nueva Orden", "new_order");
 		if(!isset($orden_compra,$monto,$concepto)) {
 			$this->flow_log("Error: No se pasaron todos los parámetros obligatorios","new_order");
 		}
 		if($medioPago == "Non") {
-			$medioPago = $flow_medioPago;
+			$medioPago = $this->flow_medioPago;
 		}
 		if(!is_numeric($monto)) {
 			$this->flow_log("Error: El parámetro monto de la orden debe ser numérico","new_order");
@@ -267,11 +376,11 @@ class flowAPI {
 	* @return string paquete firmado para enviar la respuesta del comercio
 	*/
 	public function build_response($result){
-		global $flow_comercio;
+		// global $flow_comercio;
 		$r = ($result) ? "ACEPTADO" : "RECHAZADO";
 		$data = array();
 		$data["status"] = $r;
-		$data["c"] = $flow_comercio;
+		$data["c"] = $this->flow_comercio;
 		$q = http_build_query($data);
 		$s = $this->flow_sign($q);
 		$this->flow_log("Orden N°: ".$this->order["OrdenNumero"]. " - Status: $r","flow_build_response");
@@ -317,8 +426,8 @@ class flowAPI {
 	*
 	*/
 	public function flow_log($message, $type) {
-		global $flow_logPath;
-		$file = fopen($flow_logPath . "/flowLog_" . date("Y-m-d") .".txt" , "a+");
+		// global $flow_logPath;
+		$file = fopen($this->flow_logPath . "/flowLog_" . date("Y-m-d") .".txt" , "a+");
 		fwrite($file, "[".date("Y-m-d H:i:s.u")." ".$_SERVER['REMOTE_ADDR']." ".$_SERVER['HTTP_X_FORWARDED_FOR']." - $type ] ".$message . PHP_EOL);
 		fclose($file);		   
 	}
@@ -326,9 +435,9 @@ class flowAPI {
 	
 	// Funciones Privadas
 	private function flow_get_public_key_id() {
-		global $flow_keys;
+		// global $flow_keys;
 		try {
-			$fp = fopen("$flow_keys/flow.pubkey", "r");
+			$fp = fopen("$this->flow_keys/flow.pubkey", "r");
 			$pub_key = fread($fp, 8192);
 			fclose($fp);
 			return openssl_get_publickey($pub_key);
@@ -339,9 +448,9 @@ class flowAPI {
 	}
 	
 	private function flow_get_private_key_id() {
-		global $flow_keys;
+		// global $flow_keys;
 		try {
-			$fp = fopen("$flow_keys/comercio.pem", "r");
+			$fp = fopen("$this->flow_keys/comercio.pem", "r");
 			$priv_key = fread($fp, 8192);
 			fclose($fp);
 			return openssl_get_privatekey($priv_key); 	
@@ -371,9 +480,9 @@ class flowAPI {
 	}
 	
 	private function flow_pack() {
-		global $flow_comercio, $flow_url_exito, $flow_url_fracaso, $flow_url_confirmacion, $flow_tipo_integracion, $flow_url_retorno;
-		$tipo_integracion = urlencode($flow_tipo_integracion);
-		$comercio = urlencode($flow_comercio);
+		// global $flow_comercio, $this->flow_url_exito, $this->flow_url_fracaso, $this->flow_url_confirmacion, $flow_tipo_integracion, $this->flow_url_retorno;
+		$tipo_integracion = urlencode($this->flow_tipo_integracion);
+		$comercio = urlencode($this->flow_comercio);
 		$orden_compra = urlencode($this->order["OrdenNumero"]);
 		$monto = urlencode($this->order["Monto"]);
 		$medioPago = urlencode($this->order["MedioPago"]);
@@ -386,10 +495,10 @@ class flowAPI {
 		
 		$concepto = urlencode($hConcepto);
 		
-		$url_exito = urlencode($flow_url_exito);
-		$url_fracaso = urlencode($flow_url_fracaso);
-		$url_confirmacion = urlencode($flow_url_confirmacion);
-		$url_retorno = urlencode($flow_url_retorno);
+		$url_exito = urlencode($this->flow_url_exito);
+		$url_fracaso = urlencode($this->flow_url_fracaso);
+		$url_confirmacion = urlencode($this->flow_url_confirmacion);
+		$url_retorno = urlencode($this->flow_url_retorno);
 	
 		$p = "c=$comercio&oc=$orden_compra&mp=$medioPago&m=$monto&o=$concepto&ue=$url_exito&uf=$url_fracaso&uc=$url_confirmacion&ti=$tipo_integracion&e=$email&v=kit_1_4&ur=$url_retorno";
 		

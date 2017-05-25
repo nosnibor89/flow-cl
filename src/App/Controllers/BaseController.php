@@ -12,5 +12,6 @@ class BaseController
 	public function __construct($container)
     {
 		$this->paymentService = $container->get('PaymentService');
+		$this->validationService = $container->get('ValidationService');
 	}
 }
