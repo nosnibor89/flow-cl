@@ -24,6 +24,7 @@ return [
         'flow' => [
             'configPath' => __DIR__.'/../config',
             'logPath' => __DIR__ . '/../logs',
+            'certPath' => __DIR__.'/../cert',
             // 'flowUrl' => 'http://flow.tuxpan.com/app/kpf/pago.php',
             'flowUrlPayment' => '/'
         ]

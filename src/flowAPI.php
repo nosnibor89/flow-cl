@@ -10,7 +10,7 @@
 * Date:    2017-05-25                                                   	    *
 * Author:  Robinson Marquez                                                     *
 * Reason: Constructor does not acople to how we are going to implement this     *
-* library                                                                       *
+* library  -- More POO style                                                                     *
 *                                                                               *
 ********************************************************************************/
 

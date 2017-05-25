@@ -20,7 +20,7 @@ $container['logger'] = function ($c) {
 
 // Vendor
 
-// Can't so far because constructor need the env filename which we are going to load dinamically
+// Can't use so far because constructor need the env filename which we are going to load dinamically
 // $container['dotenv'] = function ($c) {
 //      return new \Dotenv\Dotenv(__DIR__.'../config');
 // };

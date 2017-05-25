@@ -30,7 +30,7 @@ class ValidationService extends BaseService
     */
     public function isOrderDataValid($orderData){
         extract($orderData);
-        if(empty($orderId) || empty($amount) || empty($concept) || empty($payer)){
+        if(empty($orderId) || empty($amount) || empty($concept) || empty($payerEmail)){
             return false;
         }
 
@@ -38,7 +38,7 @@ class ValidationService extends BaseService
             return false;
         }
 
-        if(!$this->isEmailValid($orderData['payer'])){
+        if(!$this->isEmailValid($orderData['payerEmail'])){
             return false;
         }
 

@@ -4,35 +4,26 @@ namespace App\Services;
 
 require(__DIR__."/../../flowAPI.php");
 
+use \flowAPI;
 
 class PaymentService extends BaseService
 {
-    // Dummy
-	public function getConfig($companyName) {
-		//Get business config
-		// $accountConfig = $this->container->ConfigService->getConfig($companyName);
-		//Get global app config
-        $flowAPI = new \flowAPI();
-        print_r($flowAPI);
-		$globalConfig = $this->container->ConfigService->getConfig();
-		return $globalConfig;
-	}
-	
+	/**
+	*	Creates a payment order
+	*/	
 	public function createOrder($company,$orderData){
-		$date = new DateTime();
-		$timestamp = $date->format('YmdHis');
 
 		//Get order info info
 		extract($orderData);//$orderId, $amount, $concept, $payerEmail
 
-		//Get app log path
+		//Get app log path and cert path
 		$logPath = $this->container->settings['flow']['logPath'];
+		$certPath = $this->container->settings['flow']['certPath'];
+		//Load global config info
+		$this->container->ConfigService->loadConfig();
 
-		//Get global info
-		$globalConfig = $this->container->ConfigService->getConfig();
-
-		//Get business config info
-		$businessConfig = $this->container->ConfigService->getConfig($company);
+		//Load business config info
+		$businessConfig = $this->container->ConfigService->loadConfig($company);
 
 		// Setup config
 		$flowConfig = [
@@ -41,21 +32,19 @@ class PaymentService extends BaseService
 			'flow_url_confirmacion' => getenv('FLOW_URL_CONFIRM'),
 			'flow_url_retorno' => getenv('FLOW_URL_RETURN'),
 			'flow_url_pago' => getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_TEST') : getenv('FLOW_URL_PROD'),
-			'flow_keys' => getenv('KEYS'),
+			'flow_keys' => "$certPath/$company",
 			'flow_logPath' => $logPath,
 			'flow_comercio' => getenv('EMAIL'),
 			'flow_medioPago' => getenv('FLOW_MEDIUM '),
 			'flow_tipo_integracion' => getenv('FLOW_INTEGRATION_TYPE')
 		];		
-		
 
 		//Make request
         $flowAPI = new flowAPI($flowConfig);
 		try {
 			$flow_pack = $flowAPI->new_order($orderId, $amount, $concept, $payerEmail);
-			// $flow_pack = $flowAPI->new_order($orden_compra, $monto, $concepto, $email_pagador);
-			// Si desea enviar el medio de pago usar la siguiente línea
-			//$flow_pack = $flowAPI->new_order($orden_compra, $monto, $concepto, $email_pagador, $medioPago);
+			// We might need to allow the user select the payment method in the future.
+			// $flow_pack = $flowAPI->new_order($orderId, $amount, $concept, $payerEmail, $medioPago);
 			
 			return $flow_pack;
 		}
@@ -63,5 +52,46 @@ class PaymentService extends BaseService
 			throw new MyException('Failed creating flow order '. $e->getMessage());
 		}
 		
+	}
+
+	public function confirmOrder(){
+		$flowAPI = new flowAPI();
+
+		try {
+			// Read data sent by flow
+			$flowAPI ->read_confirm();
+			
+		} catch (Exception $e) {
+			// if something is wrong tell flow there is an error
+			echo $flowAPI ->build_response(false);
+			return;
+		}
+
+		//Responde with adknow
+		$flowAPI->build_response(true); 
+	}
+
+	public function handleFailedOrder(){
+		try {
+			// Read data sent by flow
+			$flowAPI->read_result();
+			// TODO: Find a way to let the user know something bad happened
+		} catch (Exception $e) {
+			error_log($e->getMessage());
+			header($_SERVER['SERVER_PROTOCOL'] . ' 500 Ha ocurrido un error interno', true, 500);
+			return;
+		}
+	}
+
+	public function handleSuccessOrder(){
+		try {
+				// Read data sent by flow
+				$flowAPI->read_result();
+				// TODO: Find a way to let the user the payment was success
+			} catch (Exception $e) {
+				error_log($e->getMessage());
+				header($_SERVER['SERVER_PROTOCOL'] . ' 500 Ha ocurrido un error interno', true, 500);
+				return;
+			}
 	}
 }
