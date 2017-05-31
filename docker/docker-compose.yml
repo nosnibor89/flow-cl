@@ -2,52 +2,24 @@ version: '2'
 
 services:
 
-  # Web Server
-  # Note: The network aliases are for internal naming only. You'll still need
-  # add the relevent entries in you /etc/hosts file.
   nginx:
     container_name: nginx
-    image: nginx:alpine
-    restart: always
+    image: nginx:latest
     ports:
       - "80:80"
     volumes:
       # Nginx configuration files
-      - "./config/nginx/sites-enabled:/etc/nginx/conf.d"
+      - ./config/nginx/sites-enabled:/etc/nginx/conf.d
 
       # Working folders
-      - "../:/var/www/payment-flow"
-    labels:
-      - com.docker.alias.nginx
-    networks:
-      common:
-        aliases:
-          - payment-flow.dev
+      - ../:/var/www/payment-flow
+    links:
+      - php
 
-  # PhpFPM service
-  php7fpm:
-    container_name: php7
+  php:
+    container_name: php
     image: shareableinnovations/php7
-    restart: always
+    working_dir: /var/www/payment-flow
     volumes:
-      # Composer cache volume
-      - "composer-cache:/home/www/.composer/cache"
-    volumes_from:
-      - nginx
-    labels:
-      - com.docker.alias.payment-flow
-    networks:
-      - common
-
-volumes:
-  composer-cache:
-    driver: local
-
-networks:
-  common:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.255.0.0/16
-          gateway: 10.255.0.1
+      - ../:/var/www/payment-flow
+      - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
