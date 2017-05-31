@@ -26,24 +26,24 @@ $container['logger'] = function ($c) {
 // };
 
 //Services
-$container['ConfigService'] = function($c) {
+$container['ConfigService'] = function ($c) {
     return new \App\Services\ConfigService($c);
 };
 
-$container['ValidationService'] = function($c) {
+$container['ValidationService'] = function ($c) {
     return new \App\Services\ValidationService($c);
 };
 
-$container['PaymentService'] = function($c) {
+$container['PaymentService'] = function ($c) {
     return new \App\Services\PaymentService($c);
 };
 
 //Controllers
-$container['HomeController'] = function($c) {
+$container['HomeController'] = function ($c) {
     return new \App\Controllers\HomeController($c);
 };
 
 
-$container['PaymentController'] = function($c) {
+$container['PaymentController'] = function ($c) {
     return new \App\Controllers\PaymentController($c);
 };

@@ -10,13 +10,14 @@
  */
 class Loader
 {
-    private $container;   
+    private $container;
     function __construct($container)
     {
         $this->container = $container;
     }
 
-    private static function loadController($controllerName, $methodName){
+    private static function loadController($controllerName, $methodName)
+    {
         // return new $controllerName:class();
     }
 }
