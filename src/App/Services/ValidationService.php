@@ -2,13 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\Order;
+
 class ValidationService extends BaseService
 {
-    public function isOrderValid($companyName, $key, $orderData)
+    public function isOrderValid(string $companyName, string $key, Order $order): bool
     {
         $valid = false;
         $valid = isApiKeyValid($companyName, $key);
-        $valid = isOrderDataValid($orderData);
+        $valid = isOrderDataValid($order);
 
         return $valid;
     }
@@ -16,7 +18,7 @@ class ValidationService extends BaseService
     /*
     *   Validate APIKEY company
     */
-    public function isApiKeyValid($companyName, $key)
+    public function isApiKeyValid(string $companyName, string $key): bool
     {
         $this->container->ConfigService->loadConfig($companyName);
 
@@ -28,18 +30,17 @@ class ValidationService extends BaseService
     /*
     *   Validate New Order Data
     */
-    public function isOrderDataValid($orderData)
+    public function isOrderDataValid(Order $order): bool
     {
-        extract($orderData);
-        if (empty($orderId) || empty($amount) || empty($concept) || empty($payerEmail)) {
+        if (empty($order->orderId) || empty($order->amount) || empty($order->concept) || empty($order->payerEmail)) {
             return false;
         }
 
-        if (!is_numeric($amount)) {
+        if (!is_numeric($order->amount)) {
             return false;
         }
 
-        if (!$this->isEmailValid($orderData['payerEmail'])) {
+        if (!$this->isEmailValid($order->payerEmail)) {
             return false;
         }
 
@@ -49,7 +50,7 @@ class ValidationService extends BaseService
     /**
     *   Validate email format
     */
-    private function isEmailValid($email)
+    private function isEmailValid(string $email): bool
     {
         return filter_var($email, FILTER_VALIDATE_EMAIL) ? true: false;
     }

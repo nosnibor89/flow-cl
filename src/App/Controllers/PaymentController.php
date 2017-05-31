@@ -4,25 +4,26 @@ namespace App\Controllers;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use App\Models\Order;
 
 class PaymentController extends BaseController
 {
     /*
 	*	Create a payment
 	*/
-    public function pay(ServerRequestInterface $request, ResponseInterface $response, $args)
+    public function pay(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
 
         $parsedBody = $request->getParsedBody(); // Get Data from request
 
         $company = $parsedBody['company'];
         $key = $parsedBody['apikey'];
-        $orderData = [
-            'orderId' => $parsedBody['order'],
-            'amount' => $parsedBody['amount'],
-            'concept' => $parsedBody['concept'],
-            'payerEmail' => $parsedBody['payer']
-        ];
+        $order = new Order(
+                        $parsedBody['order'],
+                        $parsedBody['amount'],
+                        $parsedBody['concept'],
+                        $parsedBody['payer']
+                    );
 
         //Validate company and apikey
         if (!$this->validationService->isApiKeyValid($company, $key)) {
@@ -34,7 +35,7 @@ class PaymentController extends BaseController
         }
 
         //Validate order data
-        if (!$this->validationService->isOrderDataValid($orderData)) {
+        if (!$this->validationService->isOrderDataValid($order)) {
             $data = [
                 'error' => true,
                 'message' => 'Order values are incorrect'
@@ -43,7 +44,11 @@ class PaymentController extends BaseController
         }
 
         //Create order
-        $data = $this->paymentService->createOrder($company, $orderData);
+        $url = $this->paymentService->createOrder($company, $order);
+        $data = [
+            'url' => $url,
+            'stuff' => 'Some other data'
+        ];
 
         return $response->withJson($data, 200);
     }

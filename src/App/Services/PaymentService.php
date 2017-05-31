@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Models\Order;
+
 require(__DIR__."/../../flowAPI.php");
 
 use \flowAPI;
@@ -11,12 +13,8 @@ class PaymentService extends BaseService
     /**
     *   Creates a payment order
     */
-    public function createOrder($company, $orderData)
+    public function createOrder(string $company, Order $order)
     {
-
-        //Get order info info
-        extract($orderData);//$orderId, $amount, $concept, $payerEmail
-
         //Get app log path and cert path
         $logPath = $this->container->settings['flow']['logPath'];
         $certPath = $this->container->settings['flow']['certPath'];
@@ -43,7 +41,7 @@ class PaymentService extends BaseService
         //Make request
         $flowAPI = new flowAPI($flowConfig);
         try {
-            $flow_pack = $flowAPI->new_order($orderId, $amount, $concept, $payerEmail);
+            $flow_pack = $flowAPI->new_order($order->orderId, $order->amount, $order->concept, $order->payerEmail);
             // We might need to allow the user select the payment method in the future.
             // $flow_pack = $flowAPI->new_order($orderId, $amount, $concept, $payerEmail, $medioPago);
             
