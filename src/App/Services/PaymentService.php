@@ -3,10 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
-
-require(__DIR__."/../../flowAPI.php");
-
-use \flowAPI;
+use flowAPI;
 
 class PaymentService extends BaseService
 {

@@ -26,5 +26,8 @@ require __DIR__ . '/../src/middleware.php';
 // Register routes
 require __DIR__ . '/../src/routes.php';
 
+//Load Flow API
+require(__DIR__."/../src/flowAPI.php");
+
 // Run app
 $app->run();
