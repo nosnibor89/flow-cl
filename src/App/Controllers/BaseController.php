@@ -7,7 +7,7 @@ use \Interop\Container\ContainerInterface;
 /**
 *   Every controller extending this class have access shared resources
 */
-class BaseController
+abstract class BaseController
 {
     protected $paymentService;
     

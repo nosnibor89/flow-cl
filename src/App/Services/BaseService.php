@@ -7,7 +7,7 @@ use \Interop\Container\ContainerInterface;
 /**
 *   Every service extending this class have access to the app container
 */
-class BaseService
+abstract class BaseService
 {
     protected $container;
     // protected $appConfig;
