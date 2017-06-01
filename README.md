@@ -17,7 +17,7 @@
 ```
 echo '$(eval docker-machine env shareableinnovations)' >> ~/.bashrc
 ```
- > If you use ZSH (power users!) you can do this
+   > If you use ZSH (power users!) you can do this
 ```
 echo 'eval $(docker-machine env shareableinnovations)' >> ~/.zshrc
 ```
