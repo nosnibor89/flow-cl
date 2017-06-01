@@ -14,13 +14,13 @@
  ```
 3. Let's ensure that's run every session
  > If you use bash (default) you can do this.
- > ```
- > echo '$(eval docker-machine env shareableinnovations)' >> ~/.bashrc
- > ```
+```
+echo '$(eval docker-machine env shareableinnovations)' >> ~/.bashrc
+```
  > If you use ZSH (power users!) you can do this
- > ```
- > echo 'eval $(docker-machine env shareableinnovations)' >> ~/.zshrc
- > ```
+```
+echo 'eval $(docker-machine env shareableinnovations)' >> ~/.zshrc
+```
 4. Run this command to set up the containers:
  ```
  docker/setup.sh
