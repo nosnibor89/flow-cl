@@ -1,1 +1,2 @@
 cert/**/*.pem filter=git-crypt diff=git-crypt
+cert/beelivery/comercio.pem filter=git-crypt diff=git-crypt
