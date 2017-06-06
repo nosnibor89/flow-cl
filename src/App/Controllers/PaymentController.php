@@ -5,6 +5,7 @@ namespace App\Controllers;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use App\Models\Order;
+use App\Models\Operation;
 
 class PaymentController extends BaseController
 {
@@ -44,10 +45,11 @@ class PaymentController extends BaseController
         }
 
         //Create order
-        $url = $this->paymentService->createOrder($company, $order);
+        $payload = $this->paymentService->createOrder($company, $order);
+        $url = $this->paymentService->getUrlFor(Operation::Payment);
         $data = [
-            'url' => $url,
-            'stuff' => 'Some other data'
+            'payload' =>  $payload,
+            'paymentUrl' => $url
         ];
 
         return $response->withJson($data, 200);

@@ -3,18 +3,29 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\Operation;
+use \Interop\Container\ContainerInterface;
 use flowAPI;
 
 class PaymentService extends BaseService
 {
+
+    private $logPath;
+    private $certPath;
+
+    function __construct(ContainerInterface $container)
+    {
+        parent::__construct($container);
+        //Get app log path and cert path
+        $this->logPath = $this->container->settings['flow']['logPath'];
+        $this->certPath = $this->container->settings['flow']['certPath'];
+    }
+
     /**
     *   Creates a payment order
     */
     public function createOrder(string $company, Order $order)
     {
-        //Get app log path and cert path
-        $logPath = $this->container->settings['flow']['logPath'];
-        $certPath = $this->container->settings['flow']['certPath'];
         //Load global config info
         $this->container->ConfigService->loadConfig();
 
@@ -28,8 +39,8 @@ class PaymentService extends BaseService
             'flow_url_confirmacion' => getenv('FLOW_URL_CONFIRM'),
             'flow_url_retorno' => getenv('FLOW_URL_RETURN'),
             'flow_url_pago' => getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_TEST') : getenv('FLOW_URL_PROD'),
-            'flow_keys' => "$certPath/$company",
-            'flow_logPath' => $logPath,
+            'flow_keys' => "$this->certPath/$company",
+            'flow_logPath' => $this->logPath,
             'flow_comercio' => getenv('EMAIL'),
             'flow_medioPago' => getenv('FLOW_MEDIUM '),
             'flow_tipo_integracion' => getenv('FLOW_INTEGRATION_TYPE')
@@ -46,6 +57,29 @@ class PaymentService extends BaseService
         } catch (Exception $e) {
             throw new MyException('Failed creating flow order '. $e->getMessage());
         }
+    }
+
+    /**
+    *   Get Url for a given operation
+    */
+    public function getUrlFor(string $operation)
+    {
+        $url = '';
+        switch ($operation) {
+            case Operation::Payment :
+                $url = getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_TEST') : getenv('FLOW_URL_PROD');
+                break;
+            case Operation::Return :
+                $url = getenv('FLOW_URL_RETURN');
+                break;
+            case Operation::Confirmation :
+                $url = getenv('FLOW_URL_CONFIRM');
+                break;
+            case Operation::Failure :
+                $url = getenv('FLOW_URL_FAILED');
+                break;
+        }
+        return $url;
     }
 
     public function confirmOrder()
