@@ -91,10 +91,11 @@ class PaymentService extends BaseService
     /*
     *   Get order data from flow
     */
-    public function getFlowOrderDetails(string $company, string $status): array
+    public function getFlowOrderDetails(string $company, string $status): OrderResponse
     {
         try {
             $results = $this->getFlowResults($company, $status);
+            return $results;
         } catch (FlowException $e) {
             throw new FlowException($e->getMessage());
         }

@@ -9,9 +9,9 @@ class OrderResponse extends Order
 {
 
 
-    protected $site;
-    protected $flowNumber;
-    protected $status;
+    public $site;
+    public $flowNumber;
+    public $status;
     function __construct(
         string $orderId,
         float $amount,
