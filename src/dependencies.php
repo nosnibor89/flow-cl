@@ -30,6 +30,10 @@ $container['ConfigService'] = function ($c) {
     return new \App\Services\ConfigService($c);
 };
 
+$container['UtilService'] = function ($c) {
+    return new \App\Services\UtilService($c);
+};
+
 $container['ValidationService'] = function ($c) {
     return new \App\Services\ValidationService($c);
 };

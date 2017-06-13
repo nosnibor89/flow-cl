@@ -16,7 +16,7 @@ $app->get('/', function ($request, $response, $args) {
 $app->group('/api', function () {
     $this->post('/pay', '\App\Controllers\PaymentController:pay');
 
-    $this->post('/confirm', '\App\Controllers\PaymentController:confirm');
+    // $this->post('/confirm', '\App\Controllers\PaymentController:confirm');
 
     $this->post('/success/{company}', '\App\Controllers\PaymentController:success');
 

@@ -48,12 +48,10 @@ class PaymentController extends BaseController
         //Create order
         $payload = $this->paymentService->createOrder($company, $order);
         $url = $this->paymentService->getUrlFor(Operation::Payment);
-        $urlTest = $this->paymentService->getUrlFor(Operation::Success);
 
         $data = [
             'payload' =>  $payload,
-            'paymentUrl' => $url,
-            'test' => $urlTest
+            'paymentUrl' => $url
         ];
 
         return $response->withJson($data, 200);
@@ -65,8 +63,8 @@ class PaymentController extends BaseController
 	*/
     public function confirm(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        //TODO: Maybe store the data in some place ????????????
-        $this->paymentService->confirmOrder();
+        //TODO: Implementation
+        // $this->paymentService->confirmOrder();
     }
 
     /*
@@ -74,12 +72,12 @@ class PaymentController extends BaseController
 	*/
     public function failed(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        // die($args['company']);
         $company = $args['company'];
-        $data = $this->paymentService->getFailedOrderDetails($company);
+        $orderData = $this->paymentService->getFlowOrderDetails($company, 'failed');
+        $url = $this->utilService->assembleUrl($orderData);
 
-        // TODO: Find a way to let the user know something bad happened
-        return $response->withJson($data, 200);
+        // Redirect to client site with transaction data
+        return $response->withRedirect($url);
     }
 
 
@@ -88,7 +86,10 @@ class PaymentController extends BaseController
 	*/
     public function success(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $this->paymentService->handleSuccessOrder();
-        // TODO: Find a way to let the user the payment was success
+        $orderData = $this->paymentService->getFlowOrderDetails($company, 'failed');
+        $url = $this->utilService->assembleUrl($orderData);
+
+        // Redirect to client site with transaction data
+        return $response->withRedirect($url);
     }
 }

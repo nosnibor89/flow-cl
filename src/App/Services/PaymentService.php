@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
+use App\Models\OrderResponse;
 use App\Models\Operation;
 use App\Exceptions\FlowException;
 use \Interop\Container\ContainerInterface;
@@ -13,7 +14,6 @@ class PaymentService extends BaseService
 
     private $logPath;
     private $certPath;
-    // private $flowApi;
 
     function __construct(ContainerInterface $container)
     {
@@ -21,8 +21,6 @@ class PaymentService extends BaseService
         //Get app log path and cert path
         $this->logPath = $this->container->settings['flow']['logPath'];
         $this->certPath = $this->container->settings['flow']['certPath'];
-
-        // $this->flowApi = new flowAPI();
     }
 
     /**
@@ -52,16 +50,16 @@ class PaymentService extends BaseService
     {
         $url = '';
         switch ($operation) {
-            case Operation::Payment :
+            case Operation::Payment:
                 $url = getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_TEST') : getenv('FLOW_URL_PROD');
                 break;
-            case Operation::Return :
+            case Operation::Return:
                 $url = getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_RETURN') : getenv('FLOW_URL_RETURN');
                 break;
-            case Operation::Confirmation :
+            case Operation::Confirmation:
                 $url = getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_CONFIRM') : getenv('FLOW_URL_CONFIRM');
                 break;
-            case Operation::Failure :
+            case Operation::Failure:
                 $url = getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_FAILED') : getenv('FLOW_URL_FAILED');
                 break;
         }
@@ -89,29 +87,16 @@ class PaymentService extends BaseService
         // $flowAPI->build_response(true);
     }
 
-    /*
-    *   Get data from flow when Failed
-    */
-    public function getFailedOrderDetails(string $company): array
-    {        
-        try {
-        $results = $this->getFlowResults($company, 'failed');
-
-        return $results;
-        } catch (FlowException $e) {
-            throw new FlowException($e->getMessage());
-        }
-    }
 
     /*
-    *   Get data from flow when Failed
+    *   Get order data from flow
     */
-    public function getSuccessOrderDetails()
+    public function getFlowOrderDetails(string $company, string $status): array
     {
         try {
-            $results = $this->getFlowResults($company, 'success');
+            $results = $this->getFlowResults($company, $status);
         } catch (FlowException $e) {
-            throw new FlowException($e->getMessage() ?? 'Couldn\'t read  read results from flow.cl');
+            throw new FlowException($e->getMessage());
         }
     }
 
@@ -119,7 +104,8 @@ class PaymentService extends BaseService
     /**
     *   Sets and returns config variables for a given company
     */
-    private function getFlowConfig(string $company): array{
+    private function getFlowConfig(string $company): array
+    {
         //Load global config info
         $this->container->ConfigService->loadConfig();
 
@@ -127,10 +113,10 @@ class PaymentService extends BaseService
         $this->container->ConfigService->loadConfig($company);
 
         // If environment is development
-        if(getenv('FLOW_ENV') === 'development'){
+        if (getenv('FLOW_ENV') === 'development') {
             $successBaseUrl = getenv('FLOW_URL_DEV_SUCCESS');
             $failedBaseUrl = getenv('FLOW_URL_DEV_FAILED');
-        }else{
+        } else {
             $successBaseUrl = getenv('FLOW_URL_SUCCESS');
             $failedBaseUrl = getenv('FLOW_URL_FAILED');
         }
@@ -147,7 +133,7 @@ class PaymentService extends BaseService
             'flow_logPath' => $this->logPath,
             'flow_comercio' => getenv('EMAIL'),
             'flow_medioPago' => getenv('FLOW_MEDIUM '),
-            'flow_tipo_integracion' => getenv('FLOW_INTEGRATION_TYPE')
+            'flow_tipo_integracion' => getenv('FLOW_INTEGRATION_TYPE'),
         ];
         return $config;
     }
@@ -156,28 +142,30 @@ class PaymentService extends BaseService
     /**
     *   Handle config response for a given transaction
     */
-    public function getFlowResults(string $company, string $status): array {
+    public function getFlowResults(string $company, string $status): OrderResponse
+    {
             
             //Get flow config
             $flowConfig = $this->getFlowConfig($company);
             
-          try{
-            $flowAPI = new flowAPI($flowConfig); 
+        try {
+            $flowAPI = new flowAPI($flowConfig);
             // Read data sent by flow
             $flowAPI->read_result();
 
-            $data = [
-                'payer' => $flowAPI->getPayer(),
-                'flowNumber' => $flowAPI->getFlowNumber(),
-                'order' => $flowAPI->getOrderNumber(),
-                'amount' => $flowAPI->getAmount(),
-                'concept' => $flowAPI->getConcept()
-            ];
+            $orderResponse = new OrderResponse(
+                $flowAPI->getOrderNumber(),
+                $flowAPI->getAmount(),
+                $flowAPI->getConcept(),
+                $flowAPI->getPayer(),
+                $flowAPI->getFlowNumber(),
+                getenv(SITE_URL),
+                $status
+            );
 
-            return $data;
-        }catch (Exception $e) {
+            return $orderResponse;
+        } catch (Exception $e) {
             throw new FlowException($e->getMessage() ?? 'Couldn\'t read  read results from flow.cl');
         }
-
     }
 }

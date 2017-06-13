@@ -5,7 +5,8 @@ namespace App\Models;
 /**
  * Operation Enum
  */
-abstract class Operation {
+abstract class Operation
+{
     const __default = self::Payment;
     
     const Payment = 1;
@@ -13,5 +14,4 @@ abstract class Operation {
     const Success = 3;
     const Confirmation = 4;
     const Return = 5;
-
 }

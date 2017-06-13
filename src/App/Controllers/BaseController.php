@@ -15,5 +15,6 @@ abstract class BaseController
     {
         $this->paymentService = $container->get('PaymentService');
         $this->validationService = $container->get('ValidationService');
+        $this->utilService = $container->get('UtilService');
     }
 }
