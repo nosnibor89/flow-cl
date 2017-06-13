@@ -1,2 +1,11 @@
 APIKEY=wTncIeZfEXSt8EqhvMol2aCKlj83yrRy
 EMAIL=jcs@beelivery.cl
+#FLOW_URL_SUCCESS =http://localhost:8080/api/success
+#FLOW_URL_FAILED=http://localhost:8080/api/failed/beelivery
+#FLOW_URL_CONFIRM=http://localhost:8080/api/confirm
+#FLOW_URL_RETURN=http://localhost:8080
+
+#FLOW_URL_DEV_SUCCESS=http://test.web.beelivery.cl/setting/payment-success
+#FLOW_URL_DEV_FAILED=http://test.web.beelivery.cl/setting/payment-failed/beelivery
+#FLOW_URL_DEV_CONFIRM=http://test.web.beelivery.cl/setting/payment-confim
+#FLOW_URL_DEV_RETURN=http://test.web.beelivery.cl/setting/payment-return

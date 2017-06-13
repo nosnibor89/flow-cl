@@ -18,7 +18,7 @@ $app->group('/api', function () {
 
     $this->post('/confirm', '\App\Controllers\PaymentController:confirm');
 
-    $this->post('/success', '\App\Controllers\PaymentController:success');
+    $this->post('/success/{company}', '\App\Controllers\PaymentController:success');
 
-    $this->post('/failed', '\App\Controllers\PaymentController:failed');
+    $this->post('/failed/{company}', '\App\Controllers\PaymentController:failed');
 });

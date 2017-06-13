@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Httpful\Request;
 use App\Models\Order;
 use App\Models\Operation;
 
@@ -47,9 +48,12 @@ class PaymentController extends BaseController
         //Create order
         $payload = $this->paymentService->createOrder($company, $order);
         $url = $this->paymentService->getUrlFor(Operation::Payment);
+        $urlTest = $this->paymentService->getUrlFor(Operation::Success);
+
         $data = [
             'payload' =>  $payload,
-            'paymentUrl' => $url
+            'paymentUrl' => $url,
+            'test' => $urlTest
         ];
 
         return $response->withJson($data, 200);
@@ -70,8 +74,12 @@ class PaymentController extends BaseController
 	*/
     public function failed(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $this->paymentService->handleFailedOrder();
+        // die($args['company']);
+        $company = $args['company'];
+        $data = $this->paymentService->getFailedOrderDetails($company);
+
         // TODO: Find a way to let the user know something bad happened
+        return $response->withJson($data, 200);
     }
 
 

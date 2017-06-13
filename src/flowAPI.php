@@ -491,7 +491,6 @@ class flowAPI
     
     private function flow_sign_validate($signature, $data)
     {
-        
         $signature = base64_decode($signature);
         $response = explode("&s=", $data, 2);
         $response = $response[0];
