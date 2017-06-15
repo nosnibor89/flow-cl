@@ -4,15 +4,13 @@
     "keywords": ["microframework", "rest", "router", "psr7"],
     "homepage": "http://github.com/slimphp/Slim-Skeleton",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Josh Lockhart",
-            "email": "info@joshlockhart.com",
-            "homepage": "http://www.joshlockhart.com/"
-        }
-    ],
+    "authors": [{
+        "name": "Josh Lockhart",
+        "email": "info@joshlockhart.com",
+        "homepage": "http://www.joshlockhart.com/"
+    }],
     "require": {
-        "php": ">=7.1",
+        "php": ">=7.0",
         "slim/slim": "^3.1",
         "slim/php-view": "^2.0",
         "monolog/monolog": "^1.17",
@@ -29,9 +27,9 @@
             "App\\": "src"
         }
     },
-	"scripts": {
+    "scripts": {
         "start": "php -S 0.0.0.0:8080 -t public public/index.php",
         "test": "phpunit"
-	}
+    }
 
 }
