@@ -74,7 +74,10 @@ class PaymentController extends BaseController
     {
         $company = $args['company'];
         $orderData = $this->paymentService->getFlowOrderDetails($company, 'failed');
-        $url = $this->utilService->assembleUrl($orderData);
+
+        $token =  $this->paymentService->storeOrderData($orderData);
+
+        $url = $this->utilService->assembleUrl($orderData, $token);
 
         // Redirect to client site with transaction data
         return $response->withRedirect($url);
@@ -91,5 +94,27 @@ class PaymentController extends BaseController
 
         // Redirect to client site with transaction data
         return $response->withRedirect($url);
+    }
+
+    /*
+	*	Validate with token 
+	*/
+    public function validate(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $parsedBody = $request->getParsedBody(); // Get Data from request
+
+        $token = $parsedBody['token'];
+        //Validate token
+        $orderData = $this->paymentService->retrieveOrderData($token);
+       
+        return $response->withJson($orderData, 200);
+    }
+
+    public function test(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+        $testResult = $this->utilService->generateRandomToken();
+
+        // Redirect to client site with transaction data
+        return $response->withJson($testResult);
     }
 }

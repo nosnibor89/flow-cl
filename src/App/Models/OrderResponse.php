@@ -29,5 +29,6 @@ class OrderResponse extends Order
         $this->payerEmail = $payerEmail;
         $this->site = $site;
         $this->flowNumber = $flowNumber;
+        $this->status = $status;
     }
 }

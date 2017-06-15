@@ -14,6 +14,7 @@ class PaymentService extends BaseService
 
     private $logPath;
     private $certPath;
+    private $utilService;
 
     function __construct(ContainerInterface $container)
     {
@@ -21,6 +22,7 @@ class PaymentService extends BaseService
         //Get app log path and cert path
         $this->logPath = $this->container->settings['flow']['logPath'];
         $this->certPath = $this->container->settings['flow']['certPath'];
+        $this->utilService = $container->get('UtilService');
     }
 
     /**
@@ -160,7 +162,7 @@ class PaymentService extends BaseService
                 $flowAPI->getConcept(),
                 $flowAPI->getPayer(),
                 $flowAPI->getFlowNumber(),
-                getenv(SITE_URL),
+                getenv('SITE_URL'),
                 $status
             );
 
@@ -168,5 +170,20 @@ class PaymentService extends BaseService
         } catch (Exception $e) {
             throw new FlowException($e->getMessage() ?? 'Couldn\'t read  read results from flow.cl');
         }
+    }
+
+    public function storeOrderData(OrderResponse $orderData): string{
+        $token = $this->utilService->generateRandomToken();
+        if($token){
+            $_SESSION[$token] = $orderData;
+            return $token;
+        }else{
+            throw new TokenException();
+        }        
+    }
+
+    public function retrieveOrderData(string $token): array{
+        $orderData = $_SESSION[$token];
+        return $orderData;
     }
 }

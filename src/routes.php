@@ -9,8 +9,10 @@ $app->get('/', function ($request, $response, $args) {
     return $response->withJson($data);
 });
 
+ $app->get('/testing', '\App\Controllers\PaymentController:test');
 
-// $app->get('/home', '\App\Controllers\HomeController:home');
+
+$app->get('/home', '\App\Controllers\PaymentController:test');
 
 //API Group
 $app->group('/api', function () {
@@ -21,4 +23,9 @@ $app->group('/api', function () {
     $this->post('/success/{company}', '\App\Controllers\PaymentController:success');
 
     $this->post('/failed/{company}', '\App\Controllers\PaymentController:failed');
+
+    $this->post('/validate', '\App\Controllers\PaymentController:validate');
+
+   
+
 });
