@@ -127,17 +127,18 @@ class PaymentService extends BaseService
         
         // Setup config
         $config = [
-            'flow_url_exito' => "$successBaseUrl/$company",
-            'flow_url_fracaso' => "$failedBaseUrl/$company",
+            'flow_url_exito' => sprintf('%s/%s', $this->certPath, $company),
+            'flow_url_fracaso' => sprintf('%s/%s', $this->certPath, $company),
             'flow_url_confirmacion' => getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_CONFIRM') : getenv('FLOW_URL_CONFIRM'),
             'flow_url_retorno' => getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_RETURN') : getenv('FLOW_URL_RETURN'),
             'flow_url_pago' => getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_TEST') : getenv('FLOW_URL_PROD'),
-            'flow_keys' => "$this->certPath/$company",
+            'flow_keys' => sprintf('%s/%s', $this->certPath, $company),
             'flow_logPath' => $this->logPath,
             'flow_comercio' => getenv('EMAIL'),
             'flow_medioPago' => getenv('FLOW_MEDIUM '),
             'flow_tipo_integracion' => getenv('FLOW_INTEGRATION_TYPE'),
         ];
+        
         return $config;
     }
 
@@ -168,22 +169,23 @@ class PaymentService extends BaseService
 
             return $orderResponse;
         } catch (Exception $e) {
-            throw new FlowException($e->getMessage() ?? 'Couldn\'t read  read results from flow.cl');
+            throw new BadSignatureException($e->getMessage() ?? 'Couldn\'t read  read results from flow.cl');
         }
     }
 
-    public function storeOrderData(OrderResponse $orderData): string{
+    public function storeOrderData(OrderResponse $orderData): string
+    {
         $token = $this->utilService->generateRandomToken();
-        if($token){
+        if ($token) {
             $_SESSION[$token] = $orderData;
             return $token;
-        }else{
+        } else {
             throw new TokenException();
-        }        
+        }
     }
 
-    public function retrieveOrderData(string $token): array{
-        $orderData = $_SESSION[$token];
-        return $orderData;
+    public function retrieveOrderData(string $token): array
+    {
+        return $_SESSION[$token] ?? [];      
     }
 }

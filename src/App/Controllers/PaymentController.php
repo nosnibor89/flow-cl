@@ -21,11 +21,11 @@ class PaymentController extends BaseController
         $company = $parsedBody['company'];
         $key = $parsedBody['apikey'];
         $order = new Order(
-                        $parsedBody['order'],
-                        $parsedBody['amount'],
-                        $parsedBody['concept'],
-                        $parsedBody['payer']
-                    );
+            $parsedBody['order'],
+            $parsedBody['amount'],
+            $parsedBody['concept'],
+            $parsedBody['payer']
+        );
 
         //Validate company and apikey
         if (!$this->validationService->isApiKeyValid($company, $key)) {
@@ -55,16 +55,6 @@ class PaymentController extends BaseController
         ];
 
         return $response->withJson($data, 200);
-    }
-
-
-    /*
-	*	Confim transaction. This is a comunication beetwen the app and flow
-	*/
-    public function confirm(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        //TODO: Implementation
-        // $this->paymentService->confirmOrder();
     }
 
     /*
@@ -99,7 +89,7 @@ class PaymentController extends BaseController
     /*
 	*	Validate with token 
 	*/
-    public function validate(ServerRequestInterface $request, ResponseInterface $response, $args)
+    public function getTransactionDetails(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $parsedBody = $request->getParsedBody(); // Get Data from request
 

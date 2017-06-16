@@ -24,8 +24,5 @@ $app->group('/api', function () {
 
     $this->post('/failed/{company}', '\App\Controllers\PaymentController:failed');
 
-    $this->post('/validate', '\App\Controllers\PaymentController:validate');
-
-   
-
+    $this->post('/transaction', '\App\Controllers\PaymentController:getTransactionDetails');
 });

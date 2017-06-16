@@ -5,7 +5,7 @@ namespace App\Models;
 /**
  * Operation Enum
  */
-abstract class Operation
+final class Operation
 {
     const __default = self::Payment;
     
