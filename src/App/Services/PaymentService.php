@@ -161,10 +161,6 @@ class PaymentService extends BaseService
         $token = $this->generateRandomToken();
         if ($token) {
             $_SESSION[$token] = $orderData;
-            print_r($_SESSION);
-            echo session_id();
-            session_unset();
-             die($token);
             return $token;
         } else {
             throw new TokenException();
@@ -173,9 +169,6 @@ class PaymentService extends BaseService
 
     public function retrieveOrderData(string $token): array
     {
-        print_r($_SESSION);
-        echo session_id();
-        die();
         return $_SESSION[$token] ?? [];
     }
 }

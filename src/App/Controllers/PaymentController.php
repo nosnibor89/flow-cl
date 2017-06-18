@@ -110,15 +110,15 @@ class PaymentController extends BaseController
         return $response->withJson($orderData, 200);
     }
 
-    public function test(ServerRequestInterface $request, ResponseInterface $response, $args)
-    {
-        $token = 'sometoddken';
-        $_SESSION[$token] = 'sdoeeema';
-        print_r($_SESSION);
-            echo session_id();
-        session_unset();
+    // public function test(ServerRequestInterface $request, ResponseInterface $response, $args)
+    // {
+    //     $token = 'sometoddken';
+    //     $_SESSION[$token] = 'sdoeeema';
+    //     print_r($_SESSION);
+    //         echo session_id();
+    //     session_unset();
 
-        // Redirect to client site with transaction data
-        return $response->withJson($_SESSION);
-    }
+    //     // Redirect to client site with transaction data
+    //     return $response->withJson($_SESSION);
+    // }
 }

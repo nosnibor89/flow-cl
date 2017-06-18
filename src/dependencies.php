@@ -20,19 +20,11 @@ $container['logger'] = function ($c) {
 
 // Vendor
 
-// Can't use so far because constructor need the env filename which we are going to load dinamically
-// $container['dotenv'] = function ($c) {
-//      return new \Dotenv\Dotenv(__DIR__.'../config');
-// };
-
 //Services
 $container['ConfigService'] = function ($c) {
     return new \App\Services\ConfigService($c);
 };
 
-$container['UtilService'] = function ($c) {
-    return new \App\Services\UtilService($c);
-};
 
 $container['ValidationService'] = function ($c) {
     return new \App\Services\ValidationService($c);

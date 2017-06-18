@@ -5,18 +5,16 @@
 // App Home
 $app->get('/', function ($request, $response, $args) {
 
-    $data = array('API' => 'Payment-Gateway-Flow');
+    $data = array('API' => 'Flow-Payment-Gateway');
     return $response->withJson($data);
 });
 
- $app->get('/testing', '\App\Controllers\PaymentController:test');
+//  $app->get('/testing', '\App\Controllers\PaymentController:test');
 
 
 //API Group
 $app->group('/api', function () {
     $this->post('/pay', '\App\Controllers\PaymentController:pay');
-
-    // $this->post('/confirm', '\App\Controllers\PaymentController:confirm');
 
     $this->post('/success/{company}', '\App\Controllers\PaymentController:handleSuccessOrder');
 
