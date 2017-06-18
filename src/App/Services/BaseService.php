@@ -10,8 +10,7 @@ use \Interop\Container\ContainerInterface;
 abstract class BaseService
 {
     protected $container;
-    // protected $appConfig;
-    
+        
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;

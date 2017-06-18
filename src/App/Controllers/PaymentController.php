@@ -60,14 +60,17 @@ class PaymentController extends BaseController
     /*
 	*	Handle transaction failed
 	*/
-    public function failed(ServerRequestInterface $request, ResponseInterface $response, $args)
+    public function handleFailedOrder(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $company = $args['company'];
         $orderData = $this->paymentService->getFlowOrderDetails($company, 'failed');
 
         $token =  $this->paymentService->storeOrderData($orderData);
 
-        $url = $this->utilService->assembleUrl($orderData, $token);
+        $url = $this->paymentService->assembleUrl(
+            $orderData->site,
+            ['token' => $token, 'status' => $orderData->status]
+        );
 
         // Redirect to client site with transaction data
         return $response->withRedirect($url);
@@ -77,10 +80,16 @@ class PaymentController extends BaseController
     /*
 	*	Handle transaction success
 	*/
-    public function success(ServerRequestInterface $request, ResponseInterface $response, $args)
+    public function handleSuccessOrder(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $orderData = $this->paymentService->getFlowOrderDetails($company, 'failed');
-        $url = $this->utilService->assembleUrl($orderData);
+        $company = $args['company'];
+        $orderData = $this->paymentService->getFlowOrderDetails($company, 'success');
+        $token =  $this->paymentService->storeOrderData($orderData);
+
+        $url = $this->paymentService->assembleUrl(
+            $orderData->site,
+            ['token' => $token, 'status' => $orderData->status]
+        );
 
         // Redirect to client site with transaction data
         return $response->withRedirect($url);
@@ -94,6 +103,7 @@ class PaymentController extends BaseController
         $parsedBody = $request->getParsedBody(); // Get Data from request
 
         $token = $parsedBody['token'];
+
         //Validate token
         $orderData = $this->paymentService->retrieveOrderData($token);
        
@@ -102,9 +112,13 @@ class PaymentController extends BaseController
 
     public function test(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
-        $testResult = $this->utilService->generateRandomToken();
+        $token = 'sometoddken';
+        $_SESSION[$token] = 'sdoeeema';
+        print_r($_SESSION);
+            echo session_id();
+        session_unset();
 
         // Redirect to client site with transaction data
-        return $response->withJson($testResult);
+        return $response->withJson($_SESSION);
     }
 }

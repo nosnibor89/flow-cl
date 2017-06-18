@@ -11,10 +11,12 @@ use flowAPI;
 
 class PaymentService extends BaseService
 {
+    use \App\Utils\Tokenizer;
+    use \App\Utils\UrlGenerator;
 
     private $logPath;
     private $certPath;
-    private $utilService;
+    // private $utilService;
 
     function __construct(ContainerInterface $container)
     {
@@ -22,7 +24,7 @@ class PaymentService extends BaseService
         //Get app log path and cert path
         $this->logPath = $this->container->settings['flow']['logPath'];
         $this->certPath = $this->container->settings['flow']['certPath'];
-        $this->utilService = $container->get('UtilService');
+        // $this->utilService = $container->get('UtilService');
     }
 
     /**
@@ -69,26 +71,6 @@ class PaymentService extends BaseService
     }
 
 
-    /*
-    *   Not implemente yet
-    */
-    public function confirmOrder()
-    {
-        // $flowAPI = new flowAPI();
-
-        // try {
-        //     // Read data sent by flow
-        //     $flowAPI ->read_confirm();
-        // } catch (Exception $e) {
-        //     // if something is wrong tell flow there is an error
-        //     echo $flowAPI ->build_response(false);
-        //     return;
-        // }
-
-        // //Responde with adknow
-        // $flowAPI->build_response(true);
-    }
-
 
     /*
     *   Get order data from flow
@@ -102,7 +84,6 @@ class PaymentService extends BaseService
             throw new FlowException($e->getMessage());
         }
     }
-
 
     /**
     *   Sets and returns config variables for a given company
@@ -119,19 +100,21 @@ class PaymentService extends BaseService
         if (getenv('FLOW_ENV') === 'development') {
             $successBaseUrl = getenv('FLOW_URL_DEV_SUCCESS');
             $failedBaseUrl = getenv('FLOW_URL_DEV_FAILED');
+            $flowPayUrl = getenv('FLOW_URL_TEST');
         } else {
             $successBaseUrl = getenv('FLOW_URL_SUCCESS');
             $failedBaseUrl = getenv('FLOW_URL_FAILED');
+            $flowPayUrl = getenv('FLOW_URL_PROD');
         }
 
         
         // Setup config
         $config = [
-            'flow_url_exito' => sprintf('%s/%s', $this->certPath, $company),
-            'flow_url_fracaso' => sprintf('%s/%s', $this->certPath, $company),
+            'flow_url_exito' => sprintf('%s/%s', $successBaseUrl, $company),
+            'flow_url_fracaso' => sprintf('%s/%s', $failedBaseUrl, $company),
             'flow_url_confirmacion' => getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_CONFIRM') : getenv('FLOW_URL_CONFIRM'),
             'flow_url_retorno' => getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_RETURN') : getenv('FLOW_URL_RETURN'),
-            'flow_url_pago' => getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_TEST') : getenv('FLOW_URL_PROD'),
+            'flow_url_pago' => $flowPayUrl,
             'flow_keys' => sprintf('%s/%s', $this->certPath, $company),
             'flow_logPath' => $this->logPath,
             'flow_comercio' => getenv('EMAIL'),
@@ -175,9 +158,13 @@ class PaymentService extends BaseService
 
     public function storeOrderData(OrderResponse $orderData): string
     {
-        $token = $this->utilService->generateRandomToken();
+        $token = $this->generateRandomToken();
         if ($token) {
             $_SESSION[$token] = $orderData;
+            print_r($_SESSION);
+            echo session_id();
+            session_unset();
+             die($token);
             return $token;
         } else {
             throw new TokenException();
@@ -186,6 +173,9 @@ class PaymentService extends BaseService
 
     public function retrieveOrderData(string $token): array
     {
-        return $_SESSION[$token] ?? [];      
+        print_r($_SESSION);
+        echo session_id();
+        die();
+        return $_SESSION[$token] ?? [];
     }
 }
