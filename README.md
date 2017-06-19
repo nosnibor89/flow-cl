@@ -1,26 +1,32 @@
-# Slim Framework 3 Skeleton Application
+# Shareable Innovations gateway to Flow.cl
 
-Use this skeleton application to quickly setup and start working on a new Slim Framework 3 application. This application uses the latest Slim 3 with the PHP-View template renderer. It also uses the Monolog logger.
+## Local setup
 
-This skeleton application was built for Composer. This makes setting up a new Slim Framework application quick and easy.
-
-## Install the Application
-
-Run this command from the directory in which you want to install your new Slim Framework application.
-
-    php composer.phar create-project slim/slim-skeleton [my-app-name]
-
-Replace `[my-app-name]` with the desired directory name for your new application. You'll want to:
-
-* Point your virtual host document root to your new application's `public/` directory.
-* Ensure `logs/` is web writeable.
-
-To run the application in development, you can also run this command. 
-
-	php composer.phar start
-
-Run this command to run the test suite
-
-	php composer.phar test
-
+1. Install [Virtualbox](https://www.virtualbox.org/wiki/Downloads)
+2. Install the [Docker Toolbox](https://www.docker.com/products/docker-toolbox)
+3. Create a new machine, let's name it **shareableinnovations** 
+ ```
+ docker-machine create -d virtualbox --virtualbox-memory 2048 shareableinnovations
+ ```
+2. Connect your current *shell session* to this new machine, you'll need to do this for every session
+ ```
+ eval $(docker-machine env shareableinnovations)
+ ```
+3. Let's ensure that's run every session
+ > If you use bash (default) you can do this.
+```
+echo '$(eval docker-machine env shareableinnovations)' >> ~/.bashrc
+```
+   > If you use ZSH (power users!) you can do this
+```
+echo 'eval $(docker-machine env shareableinnovations)' >> ~/.zshrc
+```
+4. Run this command to set up the containers:
+ ```
+ docker/setup.sh
+ ```
+5. If you haven't already, make sure to add the virtualhost to yous `/etc/hosts` file
+ ```
+ echo "$(docker-machine ip shareableinnovations) payment-flow.dev" | sudo tee -a /etc/hosts
+ ```
 That's it! Now go build something cool.
