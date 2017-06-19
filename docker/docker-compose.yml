@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      # Nginx configuration files
+      - ./config/nginx/sites-enabled:/etc/nginx/conf.d
+
+      # Working folders
+      - ../:/var/www/payment-flow
+    links:
+      - php
+
+  php:
+    container_name: php
+    image: shareableinnovations/php7
+    working_dir: /var/www/payment-flow
+    volumes:
+      - ../:/var/www/payment-flow
+      - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
