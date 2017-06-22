@@ -17,10 +17,6 @@ return [
         ],
 
         //Flow app config
-        /**
-        * Test Site = http://flow.tuxpan.com/app/kpf/pago.php
-        * Producction Site = https://www.flow.cl/app/kpf/pago.php
-        */
         'flow' => [
             'configPath' => __DIR__.'/../config',
             'logPath' => __DIR__ . '/../logs',

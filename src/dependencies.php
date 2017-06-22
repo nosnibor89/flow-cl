@@ -19,7 +19,6 @@ $container['logger'] = function ($c) {
 };
 
 // Vendor
-// monolog
 $container['predis'] = function ($c) {
     $redisConfig = $c->get('settings')['redis'];
     return new Predis\Client($redisConfig);
@@ -48,4 +47,17 @@ $container['HomeController'] = function ($c) {
 
 $container['PaymentController'] = function ($c) {
     return new \App\Controllers\PaymentController($c);
+};
+
+//Error Handlers
+$container['notAllowedHandler'] = function ($c) {
+     return ['\App\ErrorHandler','notAllowed'];
+};
+
+$container['phpErrorHandler'] = function ($c) {
+    return ['\App\ErrorHandler','runTimeError'];
+};
+
+$container['notFoundHandler'] = function ($c) {
+    return ['\App\ErrorHandler','notFound'];
 };

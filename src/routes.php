@@ -9,8 +9,6 @@ $app->get('/', function ($request, $response, $args) {
     return $response->withJson($data);
 });
 
- $app->get('/testing', '\App\Controllers\PaymentController:test');
-
 
 //API Group
 $app->group('/api', function () {
