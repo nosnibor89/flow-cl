@@ -1,40 +1,18 @@
-FROM php:7-fpm
+FROM php:7.1-fpm-alpine
 
 # Environment Variables
 ENV PHP_USER www-data
 
 # Install PHP 7 (ensure noninterative setup)
-RUN apt-get update
-RUN apt install -y curl \
-    && apt install -y libcurl3 \
-    && apt install -y libcurl3-dev \
-    && apt install -y git \
-    && apt install -y zip
-
-# PHP7 Libs
-RUN pecl install xdebug
-RUN docker-php-ext-enable xdebug
-RUN docker-php-ext-install curl
-RUN docker-php-ext-install json
-
-# X-Debug
-RUN sed -i '1 a xdebug.remote_autostart=true' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN sed -i '1 a xdebug.remote_mode=req' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN sed -i '1 a xdebug.remote_handler=dbgp' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN sed -i '1 a xdebug.remote_connect_back=1 ' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN sed -i '1 a xdebug.remote_port=9000' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-RUN sed -i '1 a xdebug.remote_enable=1' /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-
-# Give www-data access to the home folder
-RUN mkdir -p /home/www \
-    && chown www-data:staff /home/www
-
-# PHP Composer
-RUN curl -sS https://getcomposer.org/installer | php \
-    && mv composer.phar /usr/local/bin/composer
-
-# cleanup apt and lists
-RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
+RUN apk add --update autoconf \
+    curl \
+    pcre-dev \
+    gcc \
+    libcurl \
+    curl-dev \
+    git \
+    zip \
+    # PHP7 Libs
+    && docker-php-ext-install curl json \
 EXPOSE 9000
 EXPOSE 80

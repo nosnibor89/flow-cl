@@ -16,6 +16,7 @@ class PaymentService extends BaseService
 
     private $logPath;
     private $certPath;
+    private $predis;
     // private $utilService;
 
     function __construct(ContainerInterface $container)
@@ -24,6 +25,7 @@ class PaymentService extends BaseService
         //Get app log path and cert path
         $this->logPath = $this->container->settings['flow']['logPath'];
         $this->certPath = $this->container->settings['flow']['certPath'];
+        $this->predis = $this->container->predis;
         // $this->utilService = $container->get('UtilService');
     }
 
@@ -160,15 +162,17 @@ class PaymentService extends BaseService
     {
         $token = $this->generateRandomToken();
         if ($token) {
-            $_SESSION[$token] = $orderData;
+            // echo $token . "<br>";
+            $this->predis->set($token, json_encode($orderData));
             return $token;
         } else {
             throw new TokenException();
         }
     }
 
-    public function retrieveOrderData(string $token): array
+    public function retrieveOrderData(string $token): ?array
     {
-        return $_SESSION[$token] ?? [];
+        $data = json_decode($this->predis->get($token), true);
+        return $data;
     }
 }

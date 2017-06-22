@@ -106,19 +106,13 @@ class PaymentController extends BaseController
 
         //Validate token
         $orderData = $this->paymentService->retrieveOrderData($token);
-       
-        return $response->withJson($orderData, 200);
+        if(!empty($orderData)){
+            $code = 200;
+        }else{
+            $code = 400;
+            $orderData = ["error" => "No records found"];
+        }
+
+        return $response->withJson($orderData, $code);
     }
-
-    // public function test(ServerRequestInterface $request, ResponseInterface $response, $args)
-    // {
-    //     $token = 'sometoddken';
-    //     $_SESSION[$token] = 'sdoeeema';
-    //     print_r($_SESSION);
-    //         echo session_id();
-    //     session_unset();
-
-    //     // Redirect to client site with transaction data
-    //     return $response->withJson($_SESSION);
-    // }
 }

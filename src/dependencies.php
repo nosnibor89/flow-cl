@@ -19,6 +19,12 @@ $container['logger'] = function ($c) {
 };
 
 // Vendor
+// monolog
+$container['predis'] = function ($c) {
+    $redisConfig = $c->get('settings')['redis'];
+    return new Predis\Client($redisConfig);
+};
+
 
 //Services
 $container['ConfigService'] = function ($c) {
