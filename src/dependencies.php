@@ -17,3 +17,47 @@ $container['logger'] = function ($c) {
     $logger->pushHandler(new Monolog\Handler\StreamHandler($settings['path'], $settings['level']));
     return $logger;
 };
+
+// Vendor
+$container['predis'] = function ($c) {
+    $redisConfig = $c->get('settings')['redis'];
+    return new Predis\Client($redisConfig);
+};
+
+
+//Services
+$container['ConfigService'] = function ($c) {
+    return new \App\Services\ConfigService($c);
+};
+
+
+$container['ValidationService'] = function ($c) {
+    return new \App\Services\ValidationService($c);
+};
+
+$container['PaymentService'] = function ($c) {
+    return new \App\Services\PaymentService($c);
+};
+
+//Controllers
+$container['HomeController'] = function ($c) {
+    return new \App\Controllers\HomeController($c);
+};
+
+
+$container['PaymentController'] = function ($c) {
+    return new \App\Controllers\PaymentController($c);
+};
+
+//Error Handlers
+$container['notAllowedHandler'] = function ($c) {
+     return ['\App\ErrorHandler','notAllowed'];
+};
+
+$container['phpErrorHandler'] = function ($c) {
+    return ['\App\ErrorHandler','runTimeError'];
+};
+
+$container['notFoundHandler'] = function ($c) {
+    return ['\App\ErrorHandler','notFound'];
+};

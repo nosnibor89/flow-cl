@@ -15,5 +15,18 @@ return [
             'path' => __DIR__ . '/../logs/app.log',
             'level' => \Monolog\Logger::DEBUG,
         ],
+
+        //Flow app config
+        'flow' => [
+            'configPath' => __DIR__.'/../config',
+            'logPath' => __DIR__ . '/../logs',
+            'certPath' => __DIR__.'/../cert',
+            'flowUrlPayment' => '/'
+        ],
+        'redis' => [
+           'scheme' => 'tcp',
+           'host'   => 'redis',
+           'port'   => 6379,
+        ]
     ],
 ];

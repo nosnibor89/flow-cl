@@ -1,7 +1,5 @@
 version: '2'
-
 services:
-
   nginx:
     container_name: nginx
     image: nginx:latest
@@ -15,11 +13,15 @@ services:
       - ../:/var/www/payment-flow
     links:
       - php
-
   php:
     container_name: php
-    image: shareableinnovations/php7
+    build: ./image
     working_dir: /var/www/payment-flow
     volumes:
       - ../:/var/www/payment-flow
       - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+  redis: 
+    container_name: redis
+    image: redis:alpine
+    links:
+      - php
