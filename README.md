@@ -3,7 +3,7 @@
 ## Local setup
 
 1. You need to have redis installed(you can also use a third party redis service) and configure the connection in `src/settings.php`.
-2. You should be able to run the project with `php -S localhost -t public public/index.php`
+2. You should be able to run the project with `php -S localhost:80 -t public public/index.php`
 3. Done!
 
 ## Docker Setup
