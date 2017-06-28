@@ -13,6 +13,6 @@ RUN apk add --update autoconf \
     git \
     zip \
     # PHP7 Libs
-    && docker-php-ext-install curl json \
-EXPOSE 9000
+    && docker-php-ext-install curl json 
+# EXPOSE 9000
 EXPOSE 80
