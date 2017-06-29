@@ -11,7 +11,7 @@ $app->get('/', function ($request, $response, $args) {
 
 
 //API Group
-$app->group('/api', function () {
+$app->group('/v1', function () {
     $this->post('/pay', '\App\Controllers\PaymentController:pay');
 
     $this->post('/success/{company}', '\App\Controllers\PaymentController:handleSuccessOrder');
