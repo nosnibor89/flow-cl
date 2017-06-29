@@ -30,5 +30,5 @@ pipelines:
             - tar czf ../build.tar.gz .
             - scp -r ../build.tar.gz root@$SERVER_HOST:/src
             # Deploy app
-            - ssh root@$SERVER_HOST 'cd /apps && docker version'
+            - ssh root@$SERVER_HOST 'cd apps && docker version'
 
