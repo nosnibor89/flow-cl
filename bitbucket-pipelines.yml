@@ -32,6 +32,7 @@ pipelines:
             # Deploy app
             - ssh root@$SERVER_HOST 'cd apps && ls -ls && docker version'
             - ssh root@$SERVER_HOST 'cd apps && rm -rf payment-api/*'
-            - ssh root@$SERVER_HOST 'cd apps && tar xvf build.tar.gz -C payment-api/ && docker-compose down && docker-compose up -d'
-            # - ssh root@$SERVER_HOST 'cd apps && tar xvf build.tar.gz -C payment-api/'
+            - ssh root@$SERVER_HOST 'cd apps && tar xvf build.tar.gz -C payment-api/'
+            # Docker: Lift containers
+            - ssh root@$SERVER_HOST 'cd apps/payment-api/docker && docker-compose down && docker-compose up -d'
 
