@@ -31,4 +31,6 @@ pipelines:
             - scp -r ../build.tar.gz root@$SERVER_HOST:apps
             # Deploy app
             - ssh root@$SERVER_HOST 'cd apps && ls -ls && docker version'
+            - ssh root@$SERVER_HOST 'cd apps && rm -rf payment-api/*'
+            - ssh root@$SERVER_HOST 'cd apps && tar xvf build.tar.gz -C payment-api/'
 
