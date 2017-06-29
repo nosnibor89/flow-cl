@@ -106,9 +106,9 @@ class PaymentController extends BaseController
 
         //Validate token
         $orderData = $this->paymentService->retrieveOrderData($token);
-        if(!empty($orderData)){
+        if (!empty($orderData)) {
             $code = 200;
-        }else{
+        } else {
             $code = 400;
             $orderData = ["error" => "No records found"];
         }
