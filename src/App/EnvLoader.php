@@ -10,32 +10,31 @@ use \RuntimeException;
 */
 class EnvLoader
 {
-   public static function setEnv(array $config){
-    $envFileDir =  __DIR__ . '/../../';
-    $envFile = '.env';
-    //What env to load ?
-    if(file_exists($envFileDir.'.env.testing')){
-        //Load testing
-        $envFile = '.env.testing';
-    }
-    elseif(file_exists($envFileDir.'.env')){
-        //Load local
+    public static function setEnv(array $config)
+    {
+        $envFileDir =  __DIR__ . '/../../';
         $envFile = '.env';
-    }else{
-        //load production
-        foreach ($config as $key => $value) {
-            putenv(sprintf('%s=%s', $key, $value));
+      //What env to load ?
+        if (file_exists($envFileDir.'.env.testing')) {
+            //Load testing
+            $envFile = '.env.testing';
+        } elseif (file_exists($envFileDir.'.env')) {
+            //Load local
+            $envFile = '.env';
+        } else {
+            //load production
+            foreach ($config as $key => $value) {
+                putenv(sprintf('%s=%s', $key, $value));
+            }
+            return;
         }
-        return;
-    }
 
-    //Loading from files
-    try{
-        $dotenv = new \Dotenv\Dotenv($envFileDir, $envFile);
-        $dotenv->load();
-    }catch(InvalidPathException $e){
-        throw new RuntimeException(sprintf('Could not load environment correctly \n %s', $e->getMessage()));
+      //Loading from files
+        try {
+            $dotenv = new \Dotenv\Dotenv($envFileDir, $envFile);
+            $dotenv->load();
+        } catch (InvalidPathException $e) {
+            throw new RuntimeException(sprintf('Could not load environment correctly \n %s', $e->getMessage()));
+        }
     }
-
-}
 }
