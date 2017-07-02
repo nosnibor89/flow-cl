@@ -17,7 +17,6 @@ class PaymentService extends BaseService
     private $logPath;
     private $certPath;
     private $predis;
-    // private $utilService;
 
     function __construct(ContainerInterface $container)
     {
@@ -26,7 +25,6 @@ class PaymentService extends BaseService
         $this->logPath = $this->container->settings['flow']['logPath'];
         $this->certPath = $this->container->settings['flow']['certPath'];
         $this->predis = $this->container->predis;
-        // $this->utilService = $container->get('UtilService');
     }
 
     /**
@@ -57,22 +55,20 @@ class PaymentService extends BaseService
         $url = '';
         switch ($operation) {
             case Operation::Payment:
-                $url = getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_TEST') : getenv('FLOW_URL_PROD');
+                $url = getenv('FLOW_URL');
                 break;
             case Operation::Return:
-                $url = getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_RETURN') : getenv('FLOW_URL_RETURN');
+                $url = getenv('FLOW_URL_RETURN') ;
                 break;
             case Operation::Confirmation:
-                $url = getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_CONFIRM') : getenv('FLOW_URL_CONFIRM');
+                $url = getenv('FLOW_URL_CONFIRM');
                 break;
             case Operation::Failure:
-                $url = getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_FAILED') : getenv('FLOW_URL_FAILED');
+                $url = getenv('FLOW_URL_FAILED') ;
                 break;
         }
         return $url;
     }
-
-
 
     /*
     *   Get order data from flow
@@ -93,30 +89,22 @@ class PaymentService extends BaseService
     private function getFlowConfig(string $company): array
     {
         //Load global config info
-        $this->container->ConfigService->loadConfig();
+        // $this->container->ConfigService->loadConfig();
 
         //Load business config info
         $this->container->ConfigService->loadConfig($company);
 
-        // If environment is development
-        if (getenv('FLOW_ENV') === 'development') {
-            $successBaseUrl = getenv('FLOW_URL_DEV_SUCCESS');
-            $failedBaseUrl = getenv('FLOW_URL_DEV_FAILED');
-            $flowPayUrl = getenv('FLOW_URL_TEST');
-        } else {
-            $successBaseUrl = getenv('FLOW_URL_SUCCESS');
-            $failedBaseUrl = getenv('FLOW_URL_FAILED');
-            $flowPayUrl = getenv('FLOW_URL_PROD');
-        }
-
+        die(getenv('EMAIL'));
+        $successBaseUrl = getenv('FLOW_URL_SUCCESS');
+        $failedBaseUrl = getenv('FLOW_URL_FAILED');
         
         // Setup config
         $config = [
             'flow_url_exito' => sprintf('%s/%s', $successBaseUrl, $company),
             'flow_url_fracaso' => sprintf('%s/%s', $failedBaseUrl, $company),
-            'flow_url_confirmacion' => getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_CONFIRM') : getenv('FLOW_URL_CONFIRM'),
-            'flow_url_retorno' => getenv('FLOW_ENV') === 'development' ? getenv('FLOW_URL_DEV_RETURN') : getenv('FLOW_URL_RETURN'),
-            'flow_url_pago' => $flowPayUrl,
+            'flow_url_confirmacion' => getenv('FLOW_URL_CONFIRM'),
+            'flow_url_retorno' => getenv('FLOW_URL_RETURN'),
+            'flow_url_pago' => getenv('FLOW_URL'),
             'flow_keys' => sprintf('%s/%s', $this->certPath, $company),
             'flow_logPath' => $this->logPath,
             'flow_comercio' => getenv('EMAIL'),
