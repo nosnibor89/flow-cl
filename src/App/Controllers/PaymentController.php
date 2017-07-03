@@ -15,6 +15,11 @@ class PaymentController extends BaseController
 	*/
     public function pay(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
+        //Validate data and Check for errors
+        if ($request->getAttribute('hasErrors')) {
+            $errors = $request->getAttribute('errors');
+            return $response->withJson(['errors' => $errors], 400);
+        }
 
         $parsedBody = $request->getParsedBody(); // Get Data from request
 
@@ -26,24 +31,6 @@ class PaymentController extends BaseController
             $parsedBody['concept'],
             $parsedBody['payer']
         );
-
-        //Validate company and apikey
-        if (!$this->validationService->isApiKeyValid($company, $key)) {
-            $data = [
-                'error' => true,
-                'message' => 'You don\'t have access to this resource'
-            ];
-            return $response->withJson($data, 401);
-        }
-
-        //Validate order data
-        if (!$this->validationService->isOrderDataValid($order)) {
-            $data = [
-                'error' => true,
-                'message' => 'Order values are incorrect'
-            ];
-            return $response->withJson($data, 400);
-        }
 
         //Create order
         $payload = $this->paymentService->createOrder($company, $order);
@@ -110,7 +97,7 @@ class PaymentController extends BaseController
             $code = 200;
         } else {
             $code = 400;
-            $orderData = ["error" => "No records found"];
+            $orderData = ['error' => 'No records found'];
         }
 
         return $response->withJson($orderData, $code);

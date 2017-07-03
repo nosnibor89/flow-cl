@@ -9,10 +9,9 @@ $app->get('/', function ($request, $response, $args) {
     return $response->withJson($data);
 });
 
-
 //API Group
 $app->group('/v1', function () {
-    $this->post('/pay', '\App\Controllers\PaymentController:pay');
+    $this->post('/pay', '\App\Controllers\PaymentController:pay')->add('\App\Middlewares\ValidateOrder');
 
     $this->post('/success/{company}', '\App\Controllers\PaymentController:handleSuccessOrder');
 

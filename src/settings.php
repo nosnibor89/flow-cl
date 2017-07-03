@@ -1,7 +1,7 @@
 <?php
 return [
     'settings' => [
-        'displayErrorDetails' => true, // set to false in production
+        'displayErrorDetails' => getenv('APP_DEBUG'), // set to false in production
         'addContentLengthHeader' => false, // Allow the web server to send the content-length header
 
         // Renderer settings
@@ -24,9 +24,9 @@ return [
             'flowUrlPayment' => '/'
         ],
         'redis' => [
-           'scheme' => 'tcp',
-           'host'   => 'redis',
-           'port'   => 6379,
+           'scheme' => getenv('REDIS_PROTOCOL'),
+           'host'   => getenv('REDIS_HOST'),
+           'port'   => getenv('REDIS_PORT'),
         ]
     ],
 ];

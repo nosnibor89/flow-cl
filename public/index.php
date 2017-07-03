@@ -11,6 +11,9 @@ if (PHP_SAPI == 'cli-server') {
 
 require __DIR__ . '/../vendor/autoload.php';
 
+//Load app configuration
+require __DIR__.'/../config/app.php';
+
 // Instantiate the app
 $settings = require __DIR__ . '/../src/settings.php';
 $app = new \Slim\App($settings);
@@ -25,7 +28,7 @@ require __DIR__ . '/../src/middleware.php';
 require __DIR__ . '/../src/routes.php';
 
 //Load Flow API
-require(__DIR__."/../src/flowAPI.php");
+require(__DIR__.'/../src/flowAPI.php');
 
 
 //Load Predis

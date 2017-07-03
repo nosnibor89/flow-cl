@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Middlewares;
 
 use \Interop\Container\ContainerInterface;
 
 /**
 *   Every controller extending this class have access shared resources
 */
-abstract class BaseController
+abstract class BaseMiddleware
 {
-    protected $paymentService;
+    protected $configService;
     
     public function __construct(ContainerInterface $container)
     {
-        $this->paymentService = $container->get('PaymentService');
+        $this->configService = $container->get('ConfigService');
     }
 }
