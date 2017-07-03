@@ -16,7 +16,7 @@ class PaymentController extends BaseController
     public function pay(ServerRequestInterface $request, ResponseInterface $response, array $args)
     {
         //Validate data and Check for errors
-        if($request->getAttribute('hasErrors')){
+        if ($request->getAttribute('hasErrors')) {
             $errors = $request->getAttribute('errors');
             return $response->withJson(['errors' => $errors], 400);
         }

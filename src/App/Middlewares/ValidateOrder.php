@@ -31,7 +31,6 @@ class ValidateOrder extends BaseMiddleware
 
         //Validate Company
         if (!$this->isApiKeyValid($parsedBody)) {
-
             $this->hasErrors = true;
             $error = [
                 'code' => 1,
@@ -43,7 +42,6 @@ class ValidateOrder extends BaseMiddleware
 
         //Validate order data
         if (!$this->isOrderDataValid($parsedBody)) {
-
             $this->hasErrors = true;
             $error = [
                 'code' => 2,
@@ -98,5 +96,4 @@ class ValidateOrder extends BaseMiddleware
 
         return ($apikey && $apikey === $parsedBody['apikey'] ) ? true: false;
     }
-
 }

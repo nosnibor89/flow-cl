@@ -165,6 +165,5 @@ class PaymentService extends BaseService
         } catch (ConnectionException $e) {
             throw new RuntimeException(sprintf('Could not connect to predis \n %s', $e->getMessage()));
         }
-       
     }
 }
