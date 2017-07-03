@@ -24,9 +24,9 @@ return [
             'flowUrlPayment' => '/'
         ],
         'redis' => [
-           'scheme' => 'tcp',
-           'host'   => 'redis',
-           'port'   => 6379,
+           'scheme' => getenv('REDIS_PROTOCOL'),
+           'host'   => getenv('REDIS_HOST'),
+           'port'   => getenv('REDIS_PORT'),
         ]
     ],
 ];

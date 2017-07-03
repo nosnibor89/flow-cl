@@ -14,6 +14,5 @@ abstract class BaseController
     public function __construct(ContainerInterface $container)
     {
         $this->paymentService = $container->get('PaymentService');
-        $this->validationService = $container->get('ValidationService');
     }
 }

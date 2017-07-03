@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderResponse;
 use App\Models\Operation;
 use App\Exceptions\FlowException;
+use Predis\Connection\ConnectionException;
 use \Interop\Container\ContainerInterface;
 use flowAPI;
 
@@ -40,7 +41,6 @@ class PaymentService extends BaseService
             $flow_pack = $flowAPI->new_order($order->orderId, $order->amount, $order->concept, $order->payerEmail);
             // We might need to allow the user select the payment method in the future.
             // $flow_pack = $flowAPI->new_order($orderId, $amount, $concept, $payerEmail, $medioPago);
-            
             return $flow_pack;
         } catch (Exception $e) {
             throw new MyException('Failed creating flow order '. $e->getMessage());
@@ -94,7 +94,6 @@ class PaymentService extends BaseService
         //Load business config info
         $this->container->ConfigService->loadConfig($company);
 
-        die(getenv('EMAIL'));
         $successBaseUrl = getenv('FLOW_URL_SUCCESS');
         $failedBaseUrl = getenv('FLOW_URL_FAILED');
         
@@ -160,7 +159,12 @@ class PaymentService extends BaseService
 
     public function retrieveOrderData(string $token): ?array
     {
-        $data = json_decode($this->predis->get($token), true);
-        return $data;
+        try {
+            $data = json_decode($this->predis->get($token), true);
+            return $data;
+        } catch (ConnectionException $e) {
+            throw new RuntimeException(sprintf('Could not connect to predis \n %s', $e->getMessage()));
+        }
+       
     }
 }

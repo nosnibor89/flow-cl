@@ -92,7 +92,7 @@ class ValidateOrder extends BaseMiddleware
     */
     public function isApiKeyValid(array $parsedBody): bool
     {
-        $this->container->ConfigService->loadConfig($parsedBody['company']);
+        $this->configService->loadConfig($parsedBody['company']);
 
         $apikey = getenv('APIKEY') ? getenv('APIKEY') : getenv('APIKEY');
 

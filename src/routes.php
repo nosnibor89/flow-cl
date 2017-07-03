@@ -9,17 +9,9 @@ $app->get('/', function ($request, $response, $args) {
     return $response->withJson($data);
 });
 
-$app->get('/testing', function ($request, $response, $args) {
-
-    die($request);
-    $data = array('API' => 'Flow-Payment-Gateway');
-    return $response->withJson($data);
-})->add('\App\Middlewares\ValidateOrder');
-
-
 //API Group
 $app->group('/v1', function () {
-    $this->post('/pay', '\App\Controllers\PaymentController:pay');
+    $this->post('/pay', '\App\Controllers\PaymentController:pay')->add('\App\Middlewares\ValidateOrder');
 
     $this->post('/success/{company}', '\App\Controllers\PaymentController:handleSuccessOrder');
 

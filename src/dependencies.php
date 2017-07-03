@@ -29,11 +29,6 @@ $container['ConfigService'] = function ($c) {
     return new \App\Services\ConfigService($c);
 };
 
-
-// $container['ValidationService'] = function ($c) {
-//     return new \App\Services\ValidationService($c);
-// };
-
 $container['PaymentService'] = function ($c) {
     return new \App\Services\PaymentService($c);
 };
