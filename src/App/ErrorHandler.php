@@ -12,7 +12,7 @@ class ErrorHandler
 {
     public static function notAllowed(ServerRequestInterface $request, ResponseInterface $response)
     {
-        $data = ["error" => "sorry buddy you are busted!"];
+        $data = ['error' => 'sorry buddy you are busted!'];
         return $response
                 ->withStatus(405)
                 ->withJson($data);
@@ -21,7 +21,7 @@ class ErrorHandler
     public static function notFound(ServerRequestInterface $request, ResponseInterface $response)
     {
 
-        $data = ["error" => "Hey hey! There is nothing to see here!"];
+        $data = ['error' => 'Hey hey! There is nothing to see here!'];
         return $response
             ->withStatus(404)
             ->withJson($data);
@@ -30,7 +30,7 @@ class ErrorHandler
     public static function runTimeError(ServerRequestInterface $request, ResponseInterface $response)
     {
 
-        $data = ["error" => "something bad just happened!"];
+        $data = ['error' => 'something bad just happened!'];
         return $response
             ->withStatus(500)
             ->withJson($data);

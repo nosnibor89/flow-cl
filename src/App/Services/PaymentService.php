@@ -149,7 +149,6 @@ class PaymentService extends BaseService
     {
         $token = $this->generateRandomToken();
         if ($token) {
-            // echo $token . "<br>";
             $this->predis->set($token, json_encode($orderData));
             return $token;
         } else {

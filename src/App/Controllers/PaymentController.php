@@ -97,7 +97,7 @@ class PaymentController extends BaseController
             $code = 200;
         } else {
             $code = 400;
-            $orderData = ["error" => "No records found"];
+            $orderData = ['error' => 'No records found'];
         }
 
         return $response->withJson($orderData, $code);

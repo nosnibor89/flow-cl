@@ -28,7 +28,7 @@ require __DIR__ . '/../src/middleware.php';
 require __DIR__ . '/../src/routes.php';
 
 //Load Flow API
-require(__DIR__."/../src/flowAPI.php");
+require(__DIR__.'/../src/flowAPI.php');
 
 
 //Load Predis
