@@ -13,7 +13,7 @@ pipelines:
           - vendor/bin/phpcbf --standard=PSR2 src/
           - vendor/bin/phpunit
   branches:
-    pipeline:
+    staging:
       - step:
           caches:
             - composer
