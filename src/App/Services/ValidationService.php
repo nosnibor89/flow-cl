@@ -1,11 +1,38 @@
 <?php
 
 namespace App\Services;
+// use \Psr\Http\Message\ServerRequestInterface;
+// \Psr\Http\Message\ResponseInterface;
 
 use App\Models\Order;
 
 class ValidationService extends BaseService
 {
+
+        /**
+     * Validation middleware invokable class.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface $request  PSR7 request
+     * @param \Psr\Http\Message\ResponseInterface      $response PSR7 response
+     * @param callable                                 $next     Next middleware
+     *
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    // public function __invoke($request, $response, $next)
+    // {
+    //     die('mid');
+    //     $this->errors = [];
+    //     $params = $request->getParams();
+    //     $params = array_merge((array) $request->getAttribute('routeInfo')[2], $params);
+    //     $this->validate($params, $this->validators);
+    //     $request = $request->withAttribute($this->errors_name, $this->getErrors());
+    //     $request = $request->withAttribute($this->has_errors_name, $this->hasErrors());
+    //     $request = $request->withAttribute($this->validators_name, $this->getValidators());
+    //     $request = $request->withAttribute($this->translator_name, $this->getTranslator());
+    //     return $next($request, $response);
+    // }
+
+
     public function isOrderValid(string $companyName, string $key, Order $order): bool
     {
         $valid = false;
