@@ -37,8 +37,7 @@ pipelines:
             - ssh root@$SERVER_HOST 'cd apps/payment-api/docker && docker-compose down && docker-compose up -d'
   custom:
     staging_beelivery:
-      -step:
-          caches:
+      - step:
           caches:
             - composer
           script:
