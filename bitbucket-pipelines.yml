@@ -35,4 +35,24 @@ pipelines:
             - ssh root@$SERVER_HOST 'cd apps && tar xvf build.tar.gz -C payment-api/'
             # Docker: Lift containers
             - ssh root@$SERVER_HOST 'cd apps/payment-api/docker && docker-compose down && docker-compose up -d'
-
+  custom:
+    staging_beelivery:
+      -step:
+          caches:
+          caches:
+            - composer
+          script:
+            #Deps
+            - apt-get update && apt-get install -y unzip openssh-client
+            - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+            - composer install
+            # Upload source code
+            - tar czf ../build-pay.tar.gz .
+            - scp -r ../build-pay.tar.gz root@$SERVER_HOST_STAGING_BEE:apps
+            # Deploy app
+            - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && rm -rf payment-api/*'
+            - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && tar xvf build-pay.tar.gz -C payment-api/'
+            - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && rm payment-api/.env.testing && copy .env.staging payment-api/.env.staging'
+            # Docker: Lift containers
+            - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps/payment-api/docker && docker-compose down && docker-compose up -d'
+            
