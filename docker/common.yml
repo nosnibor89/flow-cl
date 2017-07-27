@@ -1,0 +1,14 @@
+version: '2'
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    volumes:
+      # Nginx configuration files
+      - ./config/nginx/sites-enabled:/etc/nginx/conf.d
+
+      # Working folders
+      - ../:/var/www/payment-flow
+    links:
+      - php
+
