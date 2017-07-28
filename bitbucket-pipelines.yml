@@ -53,5 +53,5 @@ pipelines:
             - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && tar xvf build-pay.tar.gz -C payment-api/'
             - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && rm payment-api/.env.testing && cp .env.staging payment-api/.env.staging'
             # Docker: Lift containers
-            - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps/payment-api/docker && docker-compose down && docker-compose up -d -f docker-staging.yml'
+            - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps/payment-api/docker && docker-compose down && docker-compose -f docker-staging.yml -d up'
             
