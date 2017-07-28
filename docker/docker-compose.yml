@@ -3,6 +3,7 @@ services:
   nginx:
     extends:
       file: common.yml
+      service: nginx
     ports:
       - "80:80"
   php:
