@@ -6,6 +6,8 @@ services:
       service: nginx
     ports:
       - "80:80"
+    links:
+      - php
   php:
     container_name: php
     build: ./image
