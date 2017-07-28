@@ -8,4 +8,6 @@ services:
       - ./config/nginx/sites-enabled:/etc/nginx/conf.d
       # Working folders
       - ../:/var/www/payment-flow
+    networks:
+      - backend
 
