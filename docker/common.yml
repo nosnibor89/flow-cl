@@ -10,4 +10,19 @@ services:
       - ../:/var/www/payment-flow
     networks:
       - backend
+  php:
+    container_name: payment
+    build: ./image
+    working_dir: /var/www/payment-flow
+    volumes:
+      - ../:/var/www/payment-flow
+      - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+    networks:
+      - backend
+
+  redis: 
+    container_name: redis
+    image: redis:alpine
+    networks:
+      - backend
 
