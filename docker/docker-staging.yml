@@ -5,7 +5,7 @@ services:
       file: common.yml
       service: nginx
     ports:
-      - "8080:80"
+      - "81:80"
     links:
       - php
   php:
@@ -19,7 +19,6 @@ services:
       service: redis
     links:
       - php
-
 
 networks:
   backend:
