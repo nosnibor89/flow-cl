@@ -18,6 +18,12 @@ class EnvLoader
         if (file_exists($envFileDir.'.env.testing')) {
             //Load testing
             $envFile = '.env.testing';
+        } elseif (file_exists($envFileDir.'.env.staging')) {
+            //Load local
+            $envFile = '.env.staging';
+        } elseif (file_exists($envFileDir.'.env.production')) {
+            //Load local
+            $envFile = '.env.production';
         } elseif (file_exists($envFileDir.'.env')) {
             //Load local
             $envFile = '.env';

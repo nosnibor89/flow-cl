@@ -1,0 +1,28 @@
+version: '2'
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    volumes:
+      # Nginx configuration files
+      - ./config/nginx/sites-enabled:/etc/nginx/conf.d
+      # Working folders
+      - ../:/var/www/payment-flow
+    networks:
+      - backend
+  php:
+    container_name: payment
+    build: ./image
+    working_dir: /var/www/payment-flow
+    volumes:
+      - ../:/var/www/payment-flow
+      - ./log.conf:/usr/local/etc/php-fpm.d/zz-log.conf
+    networks:
+      - backend
+
+  redis: 
+    container_name: redis
+    image: redis:alpine
+    networks:
+      - backend
+
