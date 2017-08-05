@@ -8,10 +8,14 @@ services:
       - "81:80"
     links:
       - php
+    networks:
+      - backend
   php:
     extends:
       file: common.yml
       service: php
+    networks:
+      - backend
       
   redis: 
     extends:
@@ -19,6 +23,8 @@ services:
       service: redis
     links:
       - php
+    networks:
+      - backend
 
 networks:
   backend:
