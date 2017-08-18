@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\OrderResponse;
+use App\Models\PaymentMedium;
 use App\Models\Operation;
 use App\Exceptions\FlowException;
 use Predis\Connection\ConnectionException;
@@ -33,7 +34,7 @@ class PaymentService extends BaseService
     */
     public function createOrder(string $company, Order $order)
     {
-        $flowConfig = $this->getFlowConfig($company);
+        $flowConfig = $this->getFlowConfig($company, $order->medium);
 
         //Make request
         $flowAPI = new flowAPI($flowConfig);
@@ -73,10 +74,10 @@ class PaymentService extends BaseService
     /*
     *   Get order data from flow
     */
-    public function getFlowOrderDetails(string $company, string $status): OrderResponse
+    public function getFlowOrderDetails(string $company, string $medium, string $status): OrderResponse
     {
         try {
-            $results = $this->getFlowResults($company, $status);
+            $results = $this->getFlowResults($company, $medium, $status);
             return $results;
         } catch (FlowException $e) {
             throw new FlowException($e->getMessage());
@@ -86,44 +87,59 @@ class PaymentService extends BaseService
     /**
     *   Sets and returns config variables for a given company
     */
-    private function getFlowConfig(string $company): array
+    private function getFlowConfig(string $company, string $medium): array
     {
-        //Load global config info
-        // $this->container->ConfigService->loadConfig();
-
         //Load business config info
         $this->container->ConfigService->loadConfig($company);
 
         $successBaseUrl = getenv('FLOW_URL_SUCCESS');
         $failedBaseUrl = getenv('FLOW_URL_FAILED');
-        
+        $confirmBaseUrl = getenv('FLOW_URL_CONFIRM');
+        $returnBaseUrl = getenv('FLOW_URL_RETURN');
+
         // Setup config
         $config = [
-            'flow_url_exito' => sprintf('%s/%s', $successBaseUrl, $company),
-            'flow_url_fracaso' => sprintf('%s/%s', $failedBaseUrl, $company),
-            'flow_url_confirmacion' => getenv('FLOW_URL_CONFIRM'),
-            'flow_url_retorno' => getenv('FLOW_URL_RETURN'),
+            'flow_url_exito' => sprintf('%s/%s/%s', $successBaseUrl, $company, $medium),
+            'flow_url_fracaso' => sprintf('%s/%s/%s', $failedBaseUrl, $company, $medium),
+            'flow_url_confirmacion' => sprintf('%s/%s/%s', $confirmBaseUrl, $company, $medium),
+            'flow_url_retorno' => sprintf('%s/%s/%s', $returnBaseUrl, $company, $medium),
             'flow_url_pago' => getenv('FLOW_URL'),
             'flow_keys' => sprintf('%s/%s', $this->certPath, $company),
             'flow_logPath' => $this->logPath,
             'flow_comercio' => getenv('EMAIL'),
-            'flow_medioPago' => getenv('FLOW_MEDIUM '),
+            'flow_medioPago' => $this->getPaymentMedium($medium),
             'flow_tipo_integracion' => getenv('FLOW_INTEGRATION_TYPE'),
         ];
         
         return $config;
     }
 
+    private function getPaymentMedium(string $medium): int
+    {
+        switch (strtolower($medium)) {
+            case 'webpay':
+                return PaymentMedium::Webpay;
+                break;
+            case 'servipag':
+                return PaymentMedium::Servipag;
+                break;
+            case 'multicaja':
+                return PaymentMedium::Multicaja;
+                break;
+            default:
+                return PaymentMedium::Webpay;
+                break;
+        }
+    }
+
 
     /**
     *   Handle config response for a given transaction
     */
-    public function getFlowResults(string $company, string $status): OrderResponse
+    private function getFlowResults(string $company, string $medium, string $status): OrderResponse
     {
-            
-            //Get flow config
-            $flowConfig = $this->getFlowConfig($company);
-            
+            $flowConfig = $this->getFlowConfig($company, $medium);
+                  
         try {
             $flowAPI = new flowAPI($flowConfig);
             // Read data sent by flow
