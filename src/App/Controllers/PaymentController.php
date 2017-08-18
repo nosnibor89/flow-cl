@@ -29,7 +29,8 @@ class PaymentController extends BaseController
             $parsedBody['order'],
             $parsedBody['amount'],
             $parsedBody['concept'],
-            $parsedBody['payer']
+            $parsedBody['payer'],
+            $parsedBody['medium']
         );
 
         //Create order
@@ -50,7 +51,8 @@ class PaymentController extends BaseController
     public function handleFailedOrder(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $company = $args['company'];
-        $orderData = $this->paymentService->getFlowOrderDetails($company, 'failed');
+        $medium = $args['medium'];
+        $orderData = $this->paymentService->getFlowOrderDetails($company, $medium, 'failed');
 
         $token =  $this->paymentService->storeOrderData($orderData);
 
@@ -70,7 +72,29 @@ class PaymentController extends BaseController
     public function handleSuccessOrder(ServerRequestInterface $request, ResponseInterface $response, $args)
     {
         $company = $args['company'];
-        $orderData = $this->paymentService->getFlowOrderDetails($company, 'success');
+        $medium = $args['medium'];
+        $orderData = $this->paymentService->getFlowOrderDetails($company, $medium, 'success');
+        $token =  $this->paymentService->storeOrderData($orderData);
+
+        $url = $this->paymentService->assembleUrl(
+            $orderData->site,
+            ['token' => $token, 'status' => $orderData->status]
+        );
+
+        // Redirect to client site with transaction data
+        return $response->withRedirect($url);
+    }
+
+    /*
+	*	Handle return order (only for multicaja)
+	*/
+    public function handleReturnOrder(ServerRequestInterface $request, ResponseInterface $response, $args)
+    {
+     
+        $company = $args['company'];
+        $medium = $args['medium'];
+        $orderData = $this->paymentService->getFlowOrderDetails($company, $medium, 'return');
+
         $token =  $this->paymentService->storeOrderData($orderData);
 
         $url = $this->paymentService->assembleUrl(

@@ -62,7 +62,11 @@ class ValidateOrder extends BaseMiddleware
     */
     private function isOrderDataValid(array $parsedBody): bool
     {
-        if (empty($parsedBody['order']) || empty($parsedBody['amount']) || empty($parsedBody['concept']) || empty($parsedBody['payer'])) {
+        if (empty($parsedBody['order'])
+            || empty($parsedBody['amount'])
+            || empty($parsedBody['concept'])
+            || empty($parsedBody['payer'])
+            || empty($parsedBody['medium'])) {
             return false;
         }
 
@@ -73,6 +77,7 @@ class ValidateOrder extends BaseMiddleware
         if (!$this->isEmailValid($parsedBody['payer'])) {
             return false;
         }
+        
 
         return true;
     }
