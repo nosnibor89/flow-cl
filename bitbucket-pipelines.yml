@@ -60,7 +60,7 @@ pipelines:
           caches:
             - composer
           script:
-            #Deps
+            #Depsbee-flow-cert.pem
             - apt-get update && apt-get install -y unzip openssh-client
             - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
             - composer install
@@ -72,6 +72,7 @@ pipelines:
             - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && tar xvf build-pay.tar.gz -C payment-api/'
             - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && rm payment-api/.env.production && cp .env.staging payment-api/.env.production'
             - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && rm payment-api/config/.beelivery && cp .beelivery-prod payment-api/config/.beelivery'
+            - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && rm payment-api/cert/beelivery/comercio.pem && cp bee-flow-cert.pem payment-api/cert/beelivery/comercio.pem'
             # Docker: Lift containers
             - ssh root@$SERVER_HOST_PROD_BEE 'cd apps/payment-api/docker && docker-compose down && docker-compose -f docker-staging.yml up -d'
             
