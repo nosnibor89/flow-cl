@@ -70,9 +70,9 @@ pipelines:
             # Deploy app
             - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && rm -rf payment-api/*'
             - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && tar xvf build-pay.tar.gz -C payment-api/'
-            - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && cp rm payment-api/.env.testing'
             - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && cp .env.production payment-api/.env.production'
             - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && cp .beelivery-prod payment-api/config/.beelivery'
+            - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && rm payment-api/.env.testing'
             - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && rm payment-api/cert/beelivery/comercio.pem && cp bee-flow-cert.pem payment-api/cert/beelivery/comercio.pem'
             # Docker: Lift containers
             - ssh root@$SERVER_HOST_PROD_BEE 'cd apps/payment-api/docker && docker-compose down && docker-compose -f docker-staging.yml up -d'
