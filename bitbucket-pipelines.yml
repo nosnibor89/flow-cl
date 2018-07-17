@@ -13,7 +13,7 @@ pipelines:
           - vendor/bin/phpcbf --standard=PSR2 src/
           - vendor/bin/phpunit
   branches:
-    staging:
+    development:
       - step:
           caches:
             - composer
@@ -31,12 +31,12 @@ pipelines:
             - scp -r ../build.tar.gz root@$SERVER_HOST:apps
             # Deploy app
             - ssh root@$SERVER_HOST 'cd apps && ls -ls && docker version'
-            - ssh root@$SERVER_HOST 'cd apps && rm -rf payment-api/*'
-            - ssh root@$SERVER_HOST 'cd apps && tar xvf build.tar.gz -C payment-api/'
+            - ssh root@$SERVER_HOST 'cd apps && rm -rf app/*'
+            - ssh root@$SERVER_HOST 'cd apps && tar xvf build.tar.gz -C app/'
             # Docker: Lift containers
-            - ssh root@$SERVER_HOST 'cd apps/payment-api/docker && docker-compose down && docker-compose up -d'
+            - ssh root@$SERVER_HOST 'cd apps/app/docker && docker-compose down && docker-compose up -d'
   custom:
-    # staging_beelivery:
+    # development:
     #   - step:
     #       caches:
     #         - composer
@@ -49,31 +49,9 @@ pipelines:
     #         - tar czf ../build-pay.tar.gz .
     #         - scp -r ../build-pay.tar.gz root@$SERVER_HOST_STAGING_BEE:apps
     #         # Deploy app
-    #         - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && rm -rf payment-api/*'
-    #         - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && tar xvf build-pay.tar.gz -C payment-api/'
-    #         - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && rm payment-api/.env.testing && cp .env.staging payment-api/.env.staging'
-    #         - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && rm payment-api/config/.beelivery && cp .beelivery payment-api/config/.beelivery'
+    #         - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && rm -rf app/*'
+    #         - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && tar xvf build-pay.tar.gz -C app/'
+    #         - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && rm app/.env.testing && cp .env.staging app/.env.staging'
+    #         - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps && rm app/config/.beelivery && cp .beelivery app/config/.beelivery'
     #         # Docker: Lift containers
-    #         - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps/payment-api/docker && docker-compose down && docker-compose -f docker-staging.yml up -d'
-    prod_beelivery:
-      - step:
-          caches:
-            - composer
-          script:
-            #Depsbee-flow-cert.pem
-            - apt-get update && apt-get install -y unzip openssh-client
-            - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-            - composer install
-            # Upload source code
-            - tar czf ../build-pay.tar.gz .
-            - scp -r ../build-pay.tar.gz root@$SERVER_HOST_PROD_BEE:apps
-            # Deploy app
-            - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && rm -rf payment-api/*'
-            - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && tar xvf build-pay.tar.gz -C payment-api/'
-            - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && cp .env.production payment-api/.env.production'
-            - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && cp .beelivery-prod payment-api/config/.beelivery'
-            - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && rm payment-api/.env.testing'
-            - ssh root@$SERVER_HOST_PROD_BEE 'cd apps && rm payment-api/cert/beelivery/comercio.pem && cp bee-flow-cert.pem payment-api/cert/beelivery/comercio.pem'
-            # Docker: Lift containers
-            - ssh root@$SERVER_HOST_PROD_BEE 'cd apps/payment-api/docker && docker-compose down && docker-compose -f docker-staging.yml up -d'
-            
+    #         - ssh root@$SERVER_HOST_STAGING_BEE 'cd apps/app/docker && docker-compose down && docker-compose -f docker-staging.yml up -d'

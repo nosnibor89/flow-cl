@@ -10,10 +10,10 @@ $appConfig = [
 
     //Flow 
     'FLOW_URL' => 'https://www.flow.cl/app/kpf/pago.php',
-    'FLOW_URL_SUCCESS' => 'https://flow.beelivery.cl/v1/success',
-    'FLOW_URL_FAILED'=> 'https://flow.beelivery.cl/v1/failed',
-    'FLOW_URL_CONFIRM'=> 'https://flow.beelivery.cl/v1/confirm',
-    'FLOW_URL_RETURN'=> 'https://flow.beelivery.cl/v1',
+    'FLOW_URL_SUCCESS' => 'https://website/v1/success',
+    'FLOW_URL_FAILED'=> 'https://website/v1/failed',
+    'FLOW_URL_CONFIRM'=> 'https://website/v1/confirm',
+    'FLOW_URL_RETURN'=> 'https://website/v1',
 
     //Redis
     'REDIS_HOST'=> 'redis',

@@ -5,9 +5,8 @@
     "homepage": "http://github.com/slimphp/Slim-Skeleton",
     "license": "MIT",
     "authors": [{
-        "name": "Shareable Innovations",
-        "email": "robinson.m@shareableinnovations.com",
-        "homepage": "http://www.shareableinnovations.com/"
+        "name": "Robinson M.",
+        "email": "nosnibor1989@gmail.com"
     }],
     "require": {
         "php": ">=7.1",
